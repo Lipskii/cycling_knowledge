@@ -53,12 +53,12 @@ public class Country {
         this.code = code;
     }
 
-    public List<Person> getPeople() {
-        return people;
+    public List<City> getCities() {
+        return cities;
     }
 
-    public void setPeople(List<Person> people) {
-        this.people = people;
+    public void setCities(List<City> cities) {
+        this.cities = cities;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class Country {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", code='" + code + '\'' +
-                ", people=" + people +
+                ", cities=" + cities +
                 '}';
     }
 }

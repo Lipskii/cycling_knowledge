@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "city")
-public class City implements Comparable<City> {
+public class City {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -60,11 +60,6 @@ public class City implements Comparable<City> {
 
     public void setPeople(List<Person> people) {
         this.people = people;
-    }
-
-    @Override
-    public int compareTo(City o) {
-        return this.name.compareTo(o.name);
     }
 
     @Override
