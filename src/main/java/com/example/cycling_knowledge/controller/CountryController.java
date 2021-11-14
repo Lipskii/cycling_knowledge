@@ -30,7 +30,6 @@ public class CountryController {
         this.countryService = countryService;
     }
 
-
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public List<Country> getCountries(
@@ -43,7 +42,4 @@ public class CountryController {
             }) Specification<Country> spec) {
         return countryService.get(spec, Sort.by("name"));
     }
-
-
-
 }
