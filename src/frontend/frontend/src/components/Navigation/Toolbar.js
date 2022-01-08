@@ -47,7 +47,9 @@ class Toolbar extends Component {
                     </Nav>
                     <Nav>
                         <NavDropdown id="collasible-nav-dropdown_two" title="DB Tools">
+                            <LinkContainer to="/DBCyclists">
                             <NavDropdown.Item>Cyclists</NavDropdown.Item>
+                            </LinkContainer>
                             <NavDropdown.Item>News</NavDropdown.Item>
                             <NavDropdown.Item>Results</NavDropdown.Item>
                             <NavDropdown.Item>Teams</NavDropdown.Item>
