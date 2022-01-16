@@ -15,13 +15,15 @@ class DBCyclistsMain extends Component {
     state = {
         activePage: 1,
         citiesWithCyclists: [],
-        completedModalStatus: true,
+        cities: [],
+        completedModalStatus: false,
         completedModalText: "",
         countriesWithCyclists: [],
         cyclists: [],
-        cyclistsLoading: false,
+        cyclistsLoading: true,
         cyclistToDelete: '',
         cyclistToEdit: '',
+        countries: [],
         filterCityId: '',
         filterCountryId: '',
         filterGenderId: '',
@@ -35,7 +37,23 @@ class DBCyclistsMain extends Component {
     }
 
     componentDidMount() {
-
+        axios.all([
+            axios.get('/api/cyclists'),
+            axios.get('/api/countries'),
+            axios.get('/api/countries?hasPeople=true'),
+            axios.get('/api/cities'),
+            axios.get('/api/genders')
+        ]).then(axios.spread((cyclistsData, countriesData, countriesWithPeopleData, citiesData, gendersData )=> {
+            this.setState({
+                countries: countriesData.data,
+                countriesWithCyclists: countriesWithPeopleData.data,
+                cyclists: cyclistsData.data,
+                cyclistsLoading: false,
+                cities: citiesData.data,
+                genders: gendersData.data,
+            })
+        }))
+            .catch(error => console.log(error))
     }
 
     editAthlete = (values) => {
@@ -46,7 +64,7 @@ class DBCyclistsMain extends Component {
 
     }
 
-    postAthlete = (values) => {
+    postCyclist = (values) => {
 
     }
 
@@ -183,7 +201,7 @@ class DBCyclistsMain extends Component {
                         ))}
                     </SelectInputForm>
 
-                    {/*athletes*/}
+                    {/*cyclists*/}
                     {this.state.cyclistsLoading ?
                         <Loader
                             type="ThreeDots"
@@ -193,25 +211,27 @@ class DBCyclistsMain extends Component {
                             style={{textAlign: 'center'}}
                         />
                         :
-                        <DBCyclistsCyclistsTable
-                            activePage={this.state.activePage}
-                            cyclists={this.state.cyclists}
-                            items={items}
-                            onDeleteCyclist={cyclist => {
-                                this.setState({
-                                        showDeleteModal: true,
-                                        cyclistToDelete: cyclist
-                                    })}
-                            }
-                            onEditCyclist={o => {
-                                this.setState({
-                                    cyclistToEdit: o,
-                                    editCyclist: true,
-                                })
-                            }}
-
-                        />
+                        null
                     }
+
+                    {this.state.cyclists.length > 0 ? <DBCyclistsCyclistsTable
+                        activePage={this.state.activePage}
+                        cyclists={this.state.cyclists}
+                        items={items}
+                        onDeleteCyclist={cyclist => {
+                            this.setState({
+                                showDeleteModal: true,
+                                cyclistToDelete: cyclist
+                            })}
+                        }
+                        onEditCyclist={o => {
+                            this.setState({
+                                cyclistToEdit: o,
+                                editCyclist: true,
+                            })
+                        }}
+
+                    /> : <p style={{textAlign: "center"}}>No cyclists found</p>}
                 </StyledDivCentered1200>
 
                 <StyledDiv2Right1200>
@@ -226,63 +246,14 @@ class DBCyclistsMain extends Component {
                 {/*        onHide={() => this.setState({*/}
                 {/*            newCyclist: false*/}
                 {/*        })}*/}
-                {/*        initialActive={true}*/}
-                {/*        initialBirthdate={''}*/}
-                {/*        initialTeamId={''}*/}
-                {/*        initialCountryId={''}*/}
-                {/*        initialCityId={''}*/}
-                {/*        initialFisCode={''}*/}
-                {/*        initialFirstName={''}*/}
-                {/*        initialGenderId={''}*/}
-                {/*        initialLastName={''}*/}
-                {/*        initialSkisId={''}*/}
-                {/*        mainHeader={"Adding new athlete"}*/}
-                {/*        cities={this.state.citiesForForm}*/}
-                {/*        clubs={this.state.clubsForForm}*/}
-                {/*        countries={this.state.countries}*/}
-                {/*        currentCountry={this.state.currentCountry}*/}
-                {/*        genders={this.state.genders}*/}
-                {/*        skis={this.state.skis}*/}
-                {/*        isEdit={false}*/}
                 {/*        onSubmit={(values) => {*/}
                 {/*            this.setState({*/}
                 {/*                showAddingModal: true*/}
-                {/*            }, () => this.postAthlete(values))*/}
+                {/*            }, () => this.postCyclist(values))*/}
                 {/*        }}*/}
                 {/*    />*/}
                 {/*    : null}*/}
 
-
-                {/*{this.state.editAthlete ? <AthletesForm*/}
-                {/*        show={this.state.editAthlete}*/}
-                {/*        onHide={() => this.setState({*/}
-                {/*            editAthlete: false*/}
-                {/*        })}*/}
-                {/*        initialActive={this.state.athleteToEdit.isActive}*/}
-                {/*        initialBirthdate={moment(this.state.athleteToEdit.person.birthdate)}*/}
-                {/*        initialClubId={this.state.athleteToEdit.skiClub.id}*/}
-                {/*        initialCountryId={this.state.athleteToEdit.person.country.id}*/}
-                {/*        initialCityId={this.state.athleteToEdit.person.city.id}*/}
-                {/*        initialGenderId={this.state.athleteToEdit.person.gender.id}*/}
-                {/*        initialFisCode={this.state.athleteToEdit.fisCode}*/}
-                {/*        initialFirstName={this.state.athleteToEdit.person.firstName}*/}
-                {/*        initialLastName={this.state.athleteToEdit.person.lastName}*/}
-                {/*        initialSkisId={this.state.athleteToEdit.skis.id}*/}
-                {/*        mainHeader={"Editing " + this.state.athleteToEdit.person.firstName + " " + this.state.athleteToEdit.person.lastName}*/}
-                {/*        cities={this.state.citiesForForm}*/}
-                {/*        clubs={this.state.clubsForForm}*/}
-                {/*        countries={this.state.countries}*/}
-                {/*        currentCountry={this.state.currentCountry}*/}
-                {/*        genders={this.state.genders}*/}
-                {/*        skis={this.state.skis}*/}
-                {/*        isEdit={true}*/}
-                {/*        onSubmit={(values) => {*/}
-                {/*            this.setState({*/}
-                {/*                showAddingModal: true*/}
-                {/*            }, () => this.editAthlete(values))*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*    : null}*/}
 
             </React.Fragment>
         )

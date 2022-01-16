@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -16,12 +17,15 @@ public class Person implements Comparable<Person> {
     @Column(name = "idperson")
     private int id;
 
+    @NotNull
     @Column(name = "first_name")
     private String firstName;
 
+    @NotNull
     @Column(name = "last_name")
     private String lastName;
 
+    @NotNull
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JsonIgnoreProperties("people")
     @JoinColumn(name = "gender_idgender")
@@ -31,8 +35,15 @@ public class Person implements Comparable<Person> {
     @JsonIgnore
     private Cyclist cyclist;
 
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
+    @JsonIgnoreProperties({"people","cities"})
+    @JoinColumn(name = "country_idcountry")
+    private Country country;
+
+    @NotNull
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
+
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JsonIgnoreProperties({"people"})

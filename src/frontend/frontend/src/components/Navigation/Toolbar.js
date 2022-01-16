@@ -51,8 +51,11 @@ class Toolbar extends Component {
                             <NavDropdown.Item>Cyclists</NavDropdown.Item>
                             </LinkContainer>
                             <NavDropdown.Item>News</NavDropdown.Item>
+                            <NavDropdown.Item>Races</NavDropdown.Item>
                             <NavDropdown.Item>Results</NavDropdown.Item>
-                            <NavDropdown.Item>Teams</NavDropdown.Item>
+                            <LinkContainer to="/DBTeams">
+                                <NavDropdown.Item>Teams</NavDropdown.Item>
+                            </LinkContainer>
                         </NavDropdown>
                     </Nav>
                     <Nav className="mr-1">

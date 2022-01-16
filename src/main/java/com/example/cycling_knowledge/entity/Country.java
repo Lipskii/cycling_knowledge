@@ -25,6 +25,10 @@ public class Country {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "country", cascade = {CascadeType.PERSIST})
     private List<City> cities;
 
+    @JsonIgnoreProperties(value = "country", allowSetters = true )
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "country", cascade = {CascadeType.PERSIST})
+    private List<Person> people;
+
     public Country() {
     }
 
@@ -59,6 +63,14 @@ public class Country {
 
     public void setCities(List<City> cities) {
         this.cities = cities;
+    }
+
+    public List<Person> getPeople() {
+        return people;
+    }
+
+    public void setPeople(List<Person> people) {
+        this.people = people;
     }
 
     @Override

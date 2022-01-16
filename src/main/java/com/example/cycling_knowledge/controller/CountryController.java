@@ -38,7 +38,7 @@ public class CountryController {
                     @Spec(path = "id", params = "id", spec = Equal.class),
                     @Spec(path = "name", params = "name", spec = Equal.class),
                     @Spec(path = "code", params = "code", spec = Equal.class),
-                    @Spec(path = "o", params = "hasCities", spec = NotNull.class)
+                    @Spec(path = "o", params = "hasPeople", spec = NotNull.class),
             }) Specification<Country> spec) {
         return countryService.get(spec, Sort.by("name"));
     }
