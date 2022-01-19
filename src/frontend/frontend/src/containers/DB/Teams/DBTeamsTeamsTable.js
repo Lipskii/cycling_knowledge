@@ -1,9 +1,14 @@
-import React from "react";
+import React, {useEffect} from "react";
 import {Pagination, Table} from "react-bootstrap";
 import {TableButton} from "../../../components/StyledComponents";
 
 
 const DBTeamsTeamsTable = (props) => {
+
+
+    useEffect(() => {
+        console.log(props)
+    },[])
 
     return (
         <div>

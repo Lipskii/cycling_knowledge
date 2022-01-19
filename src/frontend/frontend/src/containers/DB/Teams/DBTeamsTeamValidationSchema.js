@@ -7,8 +7,9 @@ export const DBTeamsTeamValidationSchema = () => Yup.object(
         countryId: Yup.number()
             .required('Required'),
         division: Yup.number()
-            .required('Required'),
-        code: Yup.string()
-            .test('len', 'Must be exactly 3 characters', val => val.length === 3)
-            .required('Required'),
+             .required('Required')
+//,
+    //     code: Yup.string()
+    //         .test('len', 'Must be exactly 3 characters', val => val.length === 3)
+    //         .required('Required'),
     })

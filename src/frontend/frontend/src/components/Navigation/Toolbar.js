@@ -31,7 +31,6 @@ class Toolbar extends Component {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav"/>
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link>News</Nav.Link>
                         <LinkContainer to="/results">
                              <Nav.Link>Results</Nav.Link>
                         </LinkContainer>
@@ -43,9 +42,16 @@ class Toolbar extends Component {
                             <NavDropdown.Item>World Tour Teams</NavDropdown.Item>
                             <NavDropdown.Item>Pro Teams</NavDropdown.Item>
                             <NavDropdown.Item>Continental Teams</NavDropdown.Item>
+                            <LinkContainer to='/'>
+                                <NavDropdown.Item onClick={() => {
+                                    AuthService.logout()
+                                    window.location.reload();
+                                }}>Logout</NavDropdown.Item>
+                            </LinkContainer>
                         </NavDropdown>
                     </Nav>
                     <Nav>
+                        {this.state.showModeratorBoard ?
                         <NavDropdown id="collasible-nav-dropdown_two" title="DB Tools">
                             <LinkContainer to="/DBCyclists">
                             <NavDropdown.Item>Cyclists</NavDropdown.Item>
@@ -56,7 +62,13 @@ class Toolbar extends Component {
                             <LinkContainer to="/DBTeams">
                                 <NavDropdown.Item>Teams</NavDropdown.Item>
                             </LinkContainer>
-                        </NavDropdown>
+                            <LinkContainer to='/'>
+                                <NavDropdown.Item onClick={() => {
+                                    AuthService.logout()
+                                    window.location.reload();
+                                }}>Logout</NavDropdown.Item>
+                            </LinkContainer>
+                        </NavDropdown> : null}
                     </Nav>
                     <Nav className="mr-1">
                         <Nav.Link>About</Nav.Link>

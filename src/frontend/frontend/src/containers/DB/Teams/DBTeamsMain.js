@@ -15,6 +15,7 @@ import DeleteModal from "../../../components/Modals/DeleteModal";
 class DBTeamsMain extends Component {
 
     state = {
+        activePage: 1,
         countries: [],
         editTeam: false,
         newTeam: false,
