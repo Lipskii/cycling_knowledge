@@ -38,19 +38,22 @@ public class TeamController {
                     @Spec(path = "name", params = "name", spec = Equal.class),
                     @Spec(path = "code", params = "code", spec = Equal.class),
                     @Spec(path = "division", params = "division", spec = Equal.class),
-                    @Spec(path = "country.id", params = "country.id", spec = Equal.class),
+                    @Spec(path = "country.id", params = "countryId", spec = Equal.class),
             }) Specification<Team> spec) {
         return teamService.get(spec, Sort.by("name"));
     }
 
     @PostMapping("")
     public Team addTeam(@RequestBody Team team) {
+        System.out.println(team);
         teamService.save(team);
         return team;
     }
 
     @DeleteMapping("/{teamId}")
     public void deleteTeam(@PathVariable("teamId") int teamId) {
+        System.out.println("delete");
+        System.out.println(teamId);
         teamService.deleteById(teamId);
     }
 

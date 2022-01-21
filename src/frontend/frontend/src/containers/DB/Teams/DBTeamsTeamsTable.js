@@ -8,10 +8,10 @@ const DBTeamsTeamsTable = (props) => {
 
     useEffect(() => {
         console.log(props)
-    },[])
+    },[props.teams])
 
     return (
-        <div>
+        <div style={{marginTop: '30px'}}>
             <Table bordered hover striped size={"sm"}>
                 <thead>
                 <tr>
@@ -23,12 +23,12 @@ const DBTeamsTeamsTable = (props) => {
                 </thead>
                 <tbody>
                 {props.teams.map(team => {
-                    if (((props.activePage - 1) * 15 <= props.teams.indexOf(team)) && (props.teams.indexOf(team) < props.state.activePage * 15)) {
+                    if (((props.activePage - 1) * 15 <= props.teams.indexOf(team)) && (props.teams.indexOf(team) < props.activePage * 15)) {
                         return (
                             <tr key={team.id} id={team.id}>
                                 <td>{team.name}</td>
                                 <td>{team.code}</td>
-                                <td>{team.country.code}</td>
+                                <td>{team.country.name}</td>
                                 <td>
                                     <TableButton id={team.id} name={team.name} size="sm"
                                                  variant={"info"}
@@ -47,7 +47,7 @@ const DBTeamsTeamsTable = (props) => {
                                     </TableButton>
                                     <TableButton id={team.id} name={team.name} size="sm"
                                                  variant={"danger"}
-                                                 onClick={props.onDeleteTeam(team)}
+                                                 onClick={() => props.onDeleteTeam(team)}
                                     >
                                         Delete
                                     </TableButton>

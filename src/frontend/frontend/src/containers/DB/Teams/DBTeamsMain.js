@@ -18,6 +18,7 @@ class DBTeamsMain extends Component {
         activePage: 1,
         countries: [],
         editTeam: false,
+        filterCountryId: '',
         newTeam: false,
         showAddingModal: false,
         showCompletedModal: false,
@@ -39,11 +40,7 @@ class DBTeamsMain extends Component {
                 teamsLoading: false,
             })
         }))
-            .catch(error => console.log(error))
-    }
-
-    editTeam = (values) => {
-
+            // .catch(error => console.log(error))
     }
 
     deleteTeam = () => {
@@ -53,17 +50,25 @@ class DBTeamsMain extends Component {
             .finally(() => {
                 this.setState({
                     showDeleteModal: false,
+                    teamToDelete: '',
                 }, () => this.filter())
             })
     }
 
+    onDeleteTeam = team => {
+            this.setState({
+                showDeleteModal: true,
+                teamToDelete: team
+            })
+    }
+
     postTeam = (values) => {
-        console.log("ANCZIX")
-        console.log(values)
         let successful = false
         axios.post('/api/teams', {
             name: values.name,
-            country: this.state.countries.find(country => country.id === parseInt(values.countryId))
+            country: this.state.countries.find(country => country.id === parseInt(values.countryId)),
+            code: values.code,
+            division: values.division
         })
             .then(res => {
                 successful = true
@@ -88,14 +93,55 @@ class DBTeamsMain extends Component {
 
     }
 
-    filter = () => {
+    editTeam = (values) => {
+        let successful = false
         this.setState({
-            teamsLoading: false
+            showAddingModal: true
+        }, () => {
+            axios.put('/api/teams/' + this.state.teamToEdit.id, {
+                name: values.name,
+                country: this.state.countries.find(country => country.id === parseInt(values.countryId)),
+                code: values.code,
+                division: values.division
+            })
+                .then(res => {
+                    successful = true
+                    this.filter()
+                })
+                .catch(error => console.log(error))
+                .finally(() => {
+                    let modalText
+                    if (successful) {
+                        modalText = values.name + " edited."
+                    } else {
+                        modalText = "Ups, there was a problem. Try again."
+                    }
+                    this.setState({
+                        showCompletedModal: true,
+                        completedModalText: modalText,
+                        completedModalStatus: successful,
+                        showAddingModal: false,
+                        editTeam: !successful
+                    })
+                })
         })
     }
 
+    filter = () => {
+        axios.all([
+            axios.get('/api/teams?countryId=' + this.state.filterCountryId
+                + '&division=' + this.state.filterDivisionId)
+        ])
+            .then(axios.spread((teamsData) => {
+                this.setState({
+                    teamsLoading: false,
+                    teams: teamsData.data
+                })
+            }))
+            .catch(error => console.log(error))
+    }
+
     render() {
-        console.log(this.state)
 
         let items = [];
         let numberOfPages = this.state.teams.length / 15
@@ -155,8 +201,6 @@ class DBTeamsMain extends Component {
                             this.setState({
                                 activePage: 1,
                                 teamsLoading: true,
-                                filterCityId: '',
-                                filterClubId: '',
                                 filterCountryId: e.target.value
                             }, () => this.filter())
                         }}
@@ -170,14 +214,16 @@ class DBTeamsMain extends Component {
 
                     <SelectInputForm
                         title={"Division:"}
-                        defaultValue={"1"}
+                        defaultValue={""}
                         onChange={e => {
                             this.setState({
                                 activePage: 1,
+                                teamsLoading: true,
                                 filterDivisionId: e.target.value
                             }, () => this.filter())
                         }}
                     >
+                        <option value={""}>All Divisions</option>
                         <option value={"1"}>World Tour</option>
                         <option value={"2"}>Pro Teams</option>
                         <option value={"3"}>Continental Teams</option>
@@ -195,16 +241,11 @@ class DBTeamsMain extends Component {
                         null
                     }
 
-                    {this.state.teams.length > 0 ? <DBTeamsTeamsTable
+                    {(this.state.teams.length > 0 && !this.state.teamsLoading)? <DBTeamsTeamsTable
                         activePage={this.state.activePage}
                         teams={this.state.teams}
                         items={items}
-                        onDeleteTeam={team => {
-                            this.setState({
-                                showDeleteModal: true,
-                                teamToDelete: team
-                            })}
-                        }
+                        onDeleteTeam={team => this.onDeleteTeam(team)}
                         onEditTeam={o => {
                             this.setState({
                                 teamToEdit: o,
@@ -254,7 +295,7 @@ class DBTeamsMain extends Component {
                         }}
                         initialName={this.state.teamToEdit.name}
                         initialCountryId={this.state.teamToEdit.name.countryId}
-                        initialCode={this.state.teamToEdit.name.code}
+                        initialCode={this.state.teamToEdit.code}
                         initialDivision={this.state.teamToEdit.division}
                         countries={this.state.countries}
                         mainHeader={"Editing team"}

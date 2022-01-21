@@ -6,6 +6,8 @@ export const DBTeamsTeamValidationSchema = () => Yup.object(
             .required('Required'),
         countryId: Yup.number()
             .required('Required'),
+        code: Yup.string()
+            .required('Required'),
         division: Yup.number()
              .required('Required')
 //,

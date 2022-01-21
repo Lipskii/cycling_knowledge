@@ -54,7 +54,7 @@ class Toolbar extends Component {
                         {this.state.showModeratorBoard ?
                         <NavDropdown id="collasible-nav-dropdown_two" title="DB Tools">
                             <LinkContainer to="/DBCyclists">
-                            <NavDropdown.Item>Cyclists</NavDropdown.Item>
+                                 <NavDropdown.Item>Cyclists</NavDropdown.Item>
                             </LinkContainer>
                             <NavDropdown.Item>News</NavDropdown.Item>
                             <NavDropdown.Item>Races</NavDropdown.Item>

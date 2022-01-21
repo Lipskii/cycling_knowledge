@@ -47,11 +47,11 @@ class App extends Component {
 
         const routesModerator = (
             <Switch>
-                <Route path="/DBCyclists" element={DBCyclistsMain}/>
-                <Route path="/DBTeams" element={DBTeamsMain}/>
-                <Route path="/results" element={Results}/>
-                <Route path="/cyclists" element={Cyclists}/>
-                <Route path="/" element={Results}/>
+                <Route path="/DBCyclists" component={DBCyclistsMain}/>
+                <Route path="/DBTeams" component={DBTeamsMain}/>
+                <Route path="/results" component={Results}/>
+                <Route path="/cyclists" component={Cyclists}/>
+                <Route path="/" component={Results}/>
                 <Route component={NotFound}/>
             </Switch>
         )
@@ -59,11 +59,11 @@ class App extends Component {
         const routesBasicUser = (
             <Switch>
                 <Route exact path="/login" component={Login}/>
-                <Route path="/DBCyclists" element={DBCyclistsMain}/>
-                <Route path="/DBTeams" element={DBTeamsMain}/>
-                <Route path="/results" element={Results}/>
-                <Route path="/cyclists" element={Cyclists}/>
-                <Route path="/" element={Results}/>
+                <Route path="/DBCyclists" component={DBCyclistsMain}/>
+                <Route path="/DBTeams" component={DBTeamsMain}/>
+                <Route path="/results" component={Results}/>
+                <Route path="/cyclists" component={Cyclists}/>
+                <Route path="/" component={Results}/>
                 <Route component={NotFound}/>
             </Switch>
         )
