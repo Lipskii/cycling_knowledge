@@ -4,6 +4,7 @@ package com.example.cycling_knowledge.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -28,27 +29,37 @@ public class Stage {
 
     @ManyToOne(cascade = {CascadeType.DETACH,  CascadeType.REFRESH})
     @JsonIgnoreProperties(value = "stageList", allowSetters = true)
-    @JoinColumn(name = "cyclist_idcyclist")
-    private Cyclist cyclist;
-
-    @ManyToOne(cascade = {CascadeType.DETACH,  CascadeType.REFRESH})
-    @JsonIgnoreProperties(value = "stageList", allowSetters = true)
     @JoinColumn(name = "season_idseason")
     private Season season;
+
+    @Column(name = "start_city")
+    private String stageCity;
+
+    @Column(name = "finish_city")
+    private String finishCity;
+
+    @Column(name = "distance")
+    private BigDecimal distance;
 
     public Stage() {
     }
 
-    public Stage(int number, LocalDate date, Race race, Cyclist cyclist, Season season) {
+    public Stage(int number, LocalDate date, Race race, Season season, String stageCity, String finishCity, BigDecimal distance) {
         this.number = number;
         this.date = date;
         this.race = race;
-        this.cyclist = cyclist;
         this.season = season;
+        this.stageCity = stageCity;
+        this.finishCity = finishCity;
+        this.distance = distance;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getNumber() {
@@ -75,20 +86,36 @@ public class Stage {
         this.race = race;
     }
 
-    public Cyclist getCyclist() {
-        return cyclist;
-    }
-
-    public void setCyclist(Cyclist cyclist) {
-        this.cyclist = cyclist;
-    }
-
     public Season getSeason() {
         return season;
     }
 
     public void setSeason(Season season) {
         this.season = season;
+    }
+
+    public String getStageCity() {
+        return stageCity;
+    }
+
+    public void setStageCity(String stageCity) {
+        this.stageCity = stageCity;
+    }
+
+    public String getFinishCity() {
+        return finishCity;
+    }
+
+    public void setFinishCity(String finishCity) {
+        this.finishCity = finishCity;
+    }
+
+    public BigDecimal getDistance() {
+        return distance;
+    }
+
+    public void setDistance(BigDecimal distance) {
+        this.distance = distance;
     }
 
     @Override
@@ -98,8 +125,10 @@ public class Stage {
                 ", number=" + number +
                 ", date=" + date +
                 ", race=" + race +
-                ", cyclist=" + cyclist +
                 ", season=" + season +
+                ", stageCity='" + stageCity + '\'' +
+                ", finishCity='" + finishCity + '\'' +
+                ", distance=" + distance +
                 '}';
     }
 }

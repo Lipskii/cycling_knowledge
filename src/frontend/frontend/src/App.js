@@ -11,6 +11,7 @@ import DBCyclistsMain from "./containers/DB/Cyclists/DBCyclistsMain";
 import DBTeamsMain from "./containers/DB/Teams/DBTeamsMain";
 import Login from "./components/Login";
 import AuthService from "./services/auth.service";
+import DBRacesMain from "./containers/DB/Races/DBRacesMain";
 
 
 class App extends Component {
@@ -48,6 +49,7 @@ class App extends Component {
         const routesModerator = (
             <Switch>
                 <Route path="/DBCyclists" component={DBCyclistsMain}/>
+                <Route path="/DBRaces" component={DBRacesMain}/>
                 <Route path="/DBTeams" component={DBTeamsMain}/>
                 <Route path="/results" component={Results}/>
                 <Route path="/cyclists" component={Cyclists}/>
@@ -59,8 +61,6 @@ class App extends Component {
         const routesBasicUser = (
             <Switch>
                 <Route exact path="/login" component={Login}/>
-                <Route path="/DBCyclists" component={DBCyclistsMain}/>
-                <Route path="/DBTeams" component={DBTeamsMain}/>
                 <Route path="/results" component={Results}/>
                 <Route path="/cyclists" component={Cyclists}/>
                 <Route path="/" component={Results}/>

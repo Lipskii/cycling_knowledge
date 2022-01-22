@@ -7,13 +7,14 @@ import FormikTextInputForm from "../../../components/CommonForms/FormikTextInput
 import FormikSelectInputForm from "../../../components/CommonForms/FormikSelectInputForm";
 import SelectInputForm from "../../../components/CommonForms/SelectInputForm";
 import axios from "axios";
-import {DBTeamsTeamValidationSchema} from "./DBTeamsTeamValidationSchema";
+import {DBRacesRaceValidationSchema} from "./DBRacesRaceValidationSchema";
 
 
-const DBTeamsTeamForm = (props) => {
+const DBRacesRaceForm = (props) => {
 
     const [showModal, setShowModal] = useState(false);
     const [countries, setCountries] = useState(props.countries)
+    const [categories, setCategories] = useState(props.categories)
 
     return (
         <React.Fragment>
@@ -22,10 +23,9 @@ const DBTeamsTeamForm = (props) => {
                 initialValues={{
                     name: props.initialName,
                     countryId: props.initialCountryId,
-                    code: props.initialCode,
-                    division: props.initialDivision
+                    categoryId: props.initialCategoryId,
                 }}
-                validationSchema={DBTeamsTeamValidationSchema}
+                validationSchema={DBRacesRaceValidationSchema}
                 onSubmit={(values) => {
                     props.onSubmit(values)
                 }}
@@ -52,10 +52,6 @@ const DBTeamsTeamForm = (props) => {
                                 label="Name*:"
                             />
 
-                            <FormikTextInputForm
-                                name="code"
-                                label="Code*:"
-                            />
 
                             <FormikSelectInputForm
                                 key={countries}
@@ -70,15 +66,16 @@ const DBTeamsTeamForm = (props) => {
                             </FormikSelectInputForm>
 
                             <FormikSelectInputForm
-                                // key={countries}
-                                name="division"
-                                label="Division*:"
+                                key={categories}
+                                name="categoryId"
+                                label="Category*:"
                             >
                                 <option value={""} disabled>Choose...</option>
-                                <option value={"1"}>World Tour</option>
-                                <option value={"2"}>Pro Teams</option>
-                                <option value={"3"}>Continental Teams</option>
+                                {categories.map(category => (
+                                    <option key={category.id} value={category.id}>{category.name}</option>
+                                ))}
                             </FormikSelectInputForm>
+
 
                             <StyledDiv2Right1200>
                                 <Button type={"submit"}>Submit</Button>
@@ -96,4 +93,4 @@ const DBTeamsTeamForm = (props) => {
     )
 }
 
-export default DBTeamsTeamForm
+export default DBRacesRaceForm

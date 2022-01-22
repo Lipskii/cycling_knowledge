@@ -5,7 +5,7 @@ import FormikTextInputForm from "../../../components/CommonForms/FormikTextInput
 import FormikSelectInputForm from "../../../components/CommonForms/FormikSelectInputForm";
 import {Field, Formik} from "formik";
 import axios from "axios";
-import NewCityModal from "../../../components/Modals/NewCityModal";
+import NewCityModal from "../../../components/CommonModals/NewCityModal";
 import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import {FormikDatePicker} from "../../../components/CommonForms/FormikDatePicker";
 

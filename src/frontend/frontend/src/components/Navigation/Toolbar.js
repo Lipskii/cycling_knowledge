@@ -42,12 +42,6 @@ class Toolbar extends Component {
                             <NavDropdown.Item>World Tour Teams</NavDropdown.Item>
                             <NavDropdown.Item>Pro Teams</NavDropdown.Item>
                             <NavDropdown.Item>Continental Teams</NavDropdown.Item>
-                            <LinkContainer to='/'>
-                                <NavDropdown.Item onClick={() => {
-                                    AuthService.logout()
-                                    window.location.reload();
-                                }}>Logout</NavDropdown.Item>
-                            </LinkContainer>
                         </NavDropdown>
                     </Nav>
                     <Nav>
@@ -56,8 +50,9 @@ class Toolbar extends Component {
                             <LinkContainer to="/DBCyclists">
                                  <NavDropdown.Item>Cyclists</NavDropdown.Item>
                             </LinkContainer>
-                            <NavDropdown.Item>News</NavDropdown.Item>
-                            <NavDropdown.Item>Races</NavDropdown.Item>
+                            <LinkContainer to="/DBRaces">
+                              <NavDropdown.Item>Races</NavDropdown.Item>
+                            </LinkContainer>
                             <NavDropdown.Item>Results</NavDropdown.Item>
                             <LinkContainer to="/DBTeams">
                                 <NavDropdown.Item>Teams</NavDropdown.Item>

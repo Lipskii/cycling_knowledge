@@ -7,68 +7,76 @@ import {Header3, StyledDiv2Right1200, StyledDivCentered1200} from "../../../comp
 import SelectInputForm from "../../../components/CommonForms/SelectInputForm";
 import Loader from "react-loader-spinner";
 import DBCyclistsCyclistsTable from "../Cyclists/DBCyclistsCyclistsTable";
-import * as PropTypes from "prop-types";
-import DBTeamsTeamsTable from "./DBTeamsTeamsTable";
-import DBTeamsTeamForm from "./DBTeamsTeamForm";
 import DeleteModal from "../../../components/CommonModals/DeleteModal";
+import DBTeamsTeamsTable from "../Teams/DBTeamsTeamsTable";
+import DBTeamsTeamForm from "../Teams/DBTeamsTeamForm";
+import DBRacesRaceForm from "./DBRacesRaceForm";
+import DBRacesRaceTable from "./DBRacesRaceTable";
+import {DBRacesEditStagesModal} from "./DBRacesEditStagesModal";
 
-class DBTeamsMain extends Component {
-
+class DBRacesMain extends Component {
     state = {
         activePage: 1,
+        categories: [],
         countries: [],
-        editTeam: false,
+        editRace: false,
+        filterCategoryId: '',
         filterCountryId: '',
-        newTeam: false,
+        newRace: false,
         showAddingModal: false,
         showCompletedModal: false,
         showDeleteModal: false,
-        teams: [],
-        teamsLoading: true,
-        teamToDelete: '',
-        teamToEdit: '',
+        showEditStagesModal: false,
+        races: [],
+        racesLoading: true,
+        raceToDelete: '',
+        raceToEdit: '',
+        raceToEditStages: ''
     }
 
     componentDidMount() {
         axios.all([
             axios.get("/api/countries"),
-            axios.get("/api/teams")
-        ]).then(axios.spread((countries,teams)=> {
+            axios.get("/api/races"),
+            axios.get("/api/categories")
+        ]).then(axios.spread((countries,races, categories)=> {
             this.setState({
+                categories: categories.data,
                 countries: countries.data,
-                teams: teams.data,
-                teamsLoading: false,
-            })
+                races: races.data,
+                racesLoading: false
+            },() => console.log(this.state))
         }))
-            // .catch(error => console.log(error))
+        // .catch(error => console.log(error))
     }
 
-    deleteTeam = () => {
-        axios.delete("/api/teams/" + this.state.teamToDelete.id)
+    deleteRace = () => {
+        console.log("DELETE")
+        console.log(this.state)
+        axios.delete("/api/races/" + this.state.raceToDelete.id)
             .then(res => console.log(res))
             .catch(error => console.log(error))
             .finally(() => {
                 this.setState({
                     showDeleteModal: false,
-                    teamToDelete: '',
+                    raceToDelete: '',
                 }, () => this.filter())
             })
     }
 
-    onDeleteTeam = team => {
-            this.setState({
-                showDeleteModal: true,
-                teamToDelete: team
-            })
+    onDeleteRace = race => {
+        this.setState({
+            showDeleteModal: true,
+            raceToDelete: race
+        })
     }
 
-    postTeam = (values) => {
+    postRace = (values) => {
         let successful = false
-        axios.post('/api/teams', {
+        axios.post('/api/races', {
             name: values.name,
             country: this.state.countries.find(country => country.id === parseInt(values.countryId)),
-            code: values.code,
-            division: values.division
+            category: this.state.categories.find(category => category.id === parseInt(values.categoryId))
         })
             .then(res => {
                 successful = true
@@ -93,16 +101,16 @@ class DBTeamsMain extends Component {
 
     }
 
-    editTeam = (values) => {
+    editRace = (values) => {
+        console.log(this.state)
         let successful = false
         this.setState({
             showAddingModal: true
         }, () => {
-            axios.put('/api/teams/' + this.state.teamToEdit.id, {
+            axios.put('/api/races/' + this.state.raceToEdit.id, {
                 name: values.name,
                 country: this.state.countries.find(country => country.id === parseInt(values.countryId)),
-                code: values.code,
-                division: values.division
+                category: this.state.categories.find(category => category.id === parseInt(values.categoryId))
             })
                 .then(res => {
                     successful = true
@@ -121,7 +129,7 @@ class DBTeamsMain extends Component {
                         completedModalText: modalText,
                         completedModalStatus: successful,
                         showAddingModal: false,
-                        editTeam: !successful
+                        editRace: !successful
                     })
                 })
         })
@@ -129,13 +137,13 @@ class DBTeamsMain extends Component {
 
     filter = () => {
         axios.all([
-            axios.get('/api/teams?countryId=' + this.state.filterCountryId
-                + '&division=' + this.state.filterDivisionId)
+            axios.get('/api/races?countryId=' + this.state.filterCountryId
+                + '&categoryId=' + this.state.filterCategoryId)
         ])
-            .then(axios.spread((teamsData) => {
+            .then(axios.spread((races) => {
                 this.setState({
-                    teamsLoading: false,
-                    teams: teamsData.data
+                    racesLoading: false,
+                    races: races.data
                 })
             }))
             .catch(error => console.log(error))
@@ -144,8 +152,8 @@ class DBTeamsMain extends Component {
     render() {
 
         let items = [];
-        let numberOfPages = this.state.teams.length / 15
-        if (this.state.teams.length % 15 !== 0) {
+        let numberOfPages = this.state.races.length / 15
+        if (this.state.races.length % 15 !== 0) {
             numberOfPages++
         }
 
@@ -181,14 +189,26 @@ class DBTeamsMain extends Component {
                         show={this.state.showDeleteModal}
                         onHide={() => this.setState({
                             showDeleteModal: false,
-                            teamToDelete: ''
+                            raceToDelete: ''
                         })}
-                        title={this.state.teamToDelete.name}
-                        handleDelete={this.deleteTeam}
+                        title={this.state.raceToDelete.name}
+                        handleDelete={this.deleteRace}
                     /> : null}
 
 
-                <Header3>Teams</Header3>
+                {this.state.showEditStagesModal ?
+                <DBRacesEditStagesModal
+                    show={this.state.showEditStagesModal}
+                    race={this.state.raceToEditStages}
+                    onHide={() => this.setState({
+                        showEditStagesModal: false,
+                        raceToEditStages: ''
+                    })}
+                /> : null}
+
+
+
+                <Header3>Races</Header3>
 
                 <StyledDivCentered1200>
 
@@ -200,7 +220,7 @@ class DBTeamsMain extends Component {
                         onChange={e => {
                             this.setState({
                                 activePage: 1,
-                                teamsLoading: true,
+                                racesLoading: true,
                                 filterCountryId: e.target.value
                             }, () => this.filter())
                         }}
@@ -213,23 +233,24 @@ class DBTeamsMain extends Component {
                     </SelectInputForm>
 
                     <SelectInputForm
-                        title={"Division:"}
+                        title={"Category"}
                         defaultValue={""}
                         onChange={e => {
                             this.setState({
                                 activePage: 1,
-                                teamsLoading: true,
-                                filterDivisionId: e.target.value
+                                racesLoading: true,
+                                filterCategoryId: e.target.value
                             }, () => this.filter())
                         }}
                     >
-                        <option value={""}>All Divisions</option>
-                        <option value={"1"}>World Tour</option>
-                        <option value={"2"}>Pro Teams</option>
-                        <option value={"3"}>Continental Teams</option>
+                        <option value={""}>All categories</option>
+                        {this.state.categories.map(category =>
+                            <option key={category.id} value={category.id}>
+                                {category.name}
+                            </option>)}
                     </SelectInputForm>
 
-                    {this.state.teamsLoading ?
+                    {this.state.racesLoading ?
                         <Loader
                             type="ThreeDots"
                             color="#00BFFF"
@@ -241,64 +262,71 @@ class DBTeamsMain extends Component {
                         null
                     }
 
-                    {(this.state.teams.length > 0 && !this.state.teamsLoading)? <DBTeamsTeamsTable
+                    {(this.state.races.length > 0 && !this.state.racesLoading)? <DBRacesRaceTable
                         activePage={this.state.activePage}
-                        teams={this.state.teams}
+                        races={this.state.races}
                         items={items}
-                        onDeleteTeam={team => this.onDeleteTeam(team)}
-                        onEditTeam={o => {
+                        onDelete={race => this.onDeleteRace(race)}
+                        onEdit={o => {
                             this.setState({
-                                teamToEdit: o,
-                                editTeam: true,
+                                raceToEdit: o,
+                                editRace: true,
                             })
                         }}
+                        editStages={race => {
+                            this.setState({
+                                raceToEditStages: race,
+                                showEditStagesModal: true
+                            },() => console.log(this.state))
+                        }
+                        }
 
-                    /> : <p style={{textAlign: "center"}}>No teams found</p>}
+                    /> : <p style={{textAlign: "center"}}>No races found</p>}
                 </StyledDivCentered1200>
 
                 <StyledDiv2Right1200>
                     <Button onClick={() => this.setState({
-                        newTeam: true,
-                    })} variant={"success"}>New Team</Button>
+                        newRace: true,
+                    })} variant={"success"}>New Race</Button>
                 </StyledDiv2Right1200>
 
-                {this.state.newTeam ?
-                    <DBTeamsTeamForm
-                        show={this.state.newTeam}
+                {this.state.newRace ?
+                    <DBRacesRaceForm
+                        show={this.state.newRace}
                         onHide={() => this.setState({
-                            newTeam: false
+                            newRace: false
                         })}
                         onSubmit={(values) => {
                             this.setState({
                                 showAddingModal: true
-                            }, () => this.postTeam(values))
+                            }, () => this.postRace(values))
                         }}
                         initialName={''}
                         initialCountryId={''}
-                        initialCode={''}
-                        initialDivision={''}
+                        initialCategoryId={''}
                         countries={this.state.countries}
-                        mainHeader={"Adding new team"}
+                        categories={this.state.categories}
+                        mainHeader={"Adding new race"}
                     />
                     : null}
 
-                {this.state.editTeam ?
-                    <DBTeamsTeamForm
-                        show={this.state.editTeam}
+                {this.state.editRace ?
+                    <DBRacesRaceForm
+                        show={this.state.editRace}
                         onHide={() => this.setState({
-                            editTeam: false
+                            editRace: false
                         })}
                         onSubmit={(values) => {
                             this.setState({
                                 showAddingModal: true
-                            }, () => this.editTeam(values))
+                            }, () => this.editRace(values))
                         }}
-                        initialName={this.state.teamToEdit.name}
-                        initialCountryId={this.state.teamToEdit.name.countryId}
-                        initialCode={this.state.teamToEdit.code}
-                        initialDivision={this.state.teamToEdit.division}
+                        initialName={this.state.raceToEdit.name}
+                        initialCountryId={this.state.raceToEdit.country.id}
+                        initialCategoryId={this.state.raceToEdit.category.id}
                         countries={this.state.countries}
-                        mainHeader={"Editing team"}
+                        categories={this.state.categories}
+                        mainHeader={"Editing race"}
                     />
                     : null}
 
@@ -306,9 +334,7 @@ class DBTeamsMain extends Component {
             </React.Fragment>
         )
     }
-
 }
 
 
-
-export default DBTeamsMain
+export default DBRacesMain

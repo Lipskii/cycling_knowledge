@@ -19,7 +19,6 @@ public class Race {
     @Column(name = "name")
     private String name;
 
-    @NotNull
     @JsonIgnoreProperties(value = "organisation", allowSetters = true)
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "organisation_idorganisation")
@@ -31,17 +30,31 @@ public class Race {
     @JoinColumn(name = "category_idcategory")
     private Category category;
 
+    @NotNull
+    @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "country_idcountry")
+    private Country country;
+
+    @JsonIgnoreProperties(value = "race", allowSetters = true)
+    @OrderBy("number")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "race") //, cascade = {CascadeType.PERSIST,CascadeType.REMOVE}
+    private List<Stage> stages;
+
     public Race() {
     }
 
-    public Race( @NotNull String name, @NotNull Organisation organisation, @NotNull Category category) {
+    public Race(@NotNull String name, @NotNull Category category, @NotNull Country country) {
         this.name = name;
-        this.organisation = organisation;
         this.category = category;
+        this.country = country;
     }
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -66,6 +79,22 @@ public class Race {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public List<Stage> getStages() {
+        return stages;
+    }
+
+    public void setStages(List<Stage> stages) {
+        this.stages = stages;
     }
 
     @Override
