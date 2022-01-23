@@ -6,6 +6,7 @@ import {Header3, StyledDiv2Right1200} from "../../../components/StyledComponents
 import FormikTextInputForm from "../../../components/CommonForms/FormikTextInputForm";
 import FormikSelectInputForm from "../../../components/CommonForms/FormikSelectInputForm";
 import {FormikDatePicker} from "../../../components/CommonForms/FormikDatePicker";
+import {DBRacesStageValidationSchema} from "./DBRacesStageValidationSchema";
 
 export const DBRacesStageModal = (props) => {
 
@@ -16,19 +17,17 @@ export const DBRacesStageModal = (props) => {
                 initialValues={{
                     number: props.initialNumber,
                     date: props.initialDate,
-                    season: props.initialSeason,
+                    seasonId: props.initialSeasonId,
                     startCity: props.initialStartCity,
                     finishCity: props.initialFinishCity,
                     distance: props.initialDistance
-
                 }}
-                validationSchema={DBTeamsTeamValidationSchema}
+                validationSchema={DBRacesStageValidationSchema}
                 onSubmit={(values) => {
                     props.onSubmit(values)
                 }}
             >{({
                    handleSubmit
-
                }) => (
                 <Modal show={props.show} size={"xl"} scrollable={true} onHide={props.onHide}>
                     <Form
@@ -52,30 +51,35 @@ export const DBRacesStageModal = (props) => {
                             <FormikDatePicker
                                 name="date"
                                 label={"Date*:"}
+                                style={{width: '150px'}}
                             />
 
-                            {/*<FormikSelectInputForm*/}
-                            {/*    key={countries}*/}
-                            {/*    name="countryId"*/}
-                            {/*    label="Country*:"*/}
-                            {/*    // disabled={props.countries.length < 1}*/}
-                            {/*>*/}
-                            {/*    <option value={""} disabled>Choose...</option>*/}
-                            {/*    {countries.map(country => (*/}
-                            {/*        <option key={country.id} value={country.id}>{country.name}</option>*/}
-                            {/*    ))}*/}
-                            {/*</FormikSelectInputForm>*/}
-
                             <FormikSelectInputForm
-                                // key={countries}
-                                name="division"
-                                label="Division*:"
+                                key={props.seasons}
+                                name="seasonId"
+                                label="Season*:"
+                                // disabled={props.countries.length < 1}
                             >
                                 <option value={""} disabled>Choose...</option>
-                                <option value={"1"}>World Tour</option>
-                                <option value={"2"}>Pro Teams</option>
-                                <option value={"3"}>Continental Teams</option>
+                                {props.seasons.map(season => (
+                                    <option key={season.id} value={season.id}>{season.season}</option>
+                                ))}
                             </FormikSelectInputForm>
+
+                            <FormikTextInputForm
+                                name="startCity"
+                                label="Start:"
+                            />
+
+                            <FormikTextInputForm
+                                name="finishCity"
+                                label="Finish:"
+                            />
+
+                            <FormikTextInputForm
+                                name="distance"
+                                label="Distance (km):"
+                            />
 
                             <StyledDiv2Right1200>
                                 <Button type={"submit"}>Submit</Button>

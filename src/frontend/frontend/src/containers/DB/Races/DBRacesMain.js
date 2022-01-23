@@ -12,7 +12,8 @@ import DBTeamsTeamsTable from "../Teams/DBTeamsTeamsTable";
 import DBTeamsTeamForm from "../Teams/DBTeamsTeamForm";
 import DBRacesRaceForm from "./DBRacesRaceForm";
 import DBRacesRaceTable from "./DBRacesRaceTable";
-import {DBRacesEditStagesModal} from "./DBRacesEditStagesModal";
+import DBRacesEditStagesModal from "./DBRacesEditStagesModal";
+
 
 class DBRacesMain extends Component {
     state = {

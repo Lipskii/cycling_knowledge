@@ -33,7 +33,7 @@ public class Stage {
     private Season season;
 
     @Column(name = "start_city")
-    private String stageCity;
+    private String startCity;
 
     @Column(name = "finish_city")
     private String finishCity;
@@ -44,12 +44,12 @@ public class Stage {
     public Stage() {
     }
 
-    public Stage(int number, LocalDate date, Race race, Season season, String stageCity, String finishCity, BigDecimal distance) {
+    public Stage(int number, LocalDate date, Race race, Season season, String startCity, String finishCity, BigDecimal distance) {
         this.number = number;
         this.date = date;
         this.race = race;
         this.season = season;
-        this.stageCity = stageCity;
+        this.startCity = startCity;
         this.finishCity = finishCity;
         this.distance = distance;
     }
@@ -94,12 +94,12 @@ public class Stage {
         this.season = season;
     }
 
-    public String getStageCity() {
-        return stageCity;
+    public String getStartCity() {
+        return startCity;
     }
 
-    public void setStageCity(String stageCity) {
-        this.stageCity = stageCity;
+    public void setStartCity(String stageCity) {
+        this.startCity = stageCity;
     }
 
     public String getFinishCity() {
@@ -126,7 +126,7 @@ public class Stage {
                 ", date=" + date +
                 ", race=" + race +
                 ", season=" + season +
-                ", stageCity='" + stageCity + '\'' +
+                ", stageCity='" + startCity + '\'' +
                 ", finishCity='" + finishCity + '\'' +
                 ", distance=" + distance +
                 '}';
