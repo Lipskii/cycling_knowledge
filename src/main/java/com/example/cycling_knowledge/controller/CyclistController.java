@@ -39,7 +39,6 @@ public class CyclistController {
                     @Spec(path = "person.id", params = "personId", spec = Equal.class),
                     @Spec(path = "isActive", params = "isActive", spec = Equal.class),
                     @Spec(path = "uciCode", params = "uciCode", spec = Equal.class),
-                    @Spec(path = "skis.id", params = "skisId", spec = Equal.class),
                     @Spec(path = "person.country.id", params = "countryId", spec = Equal.class),
                     @Spec(path = "person.city.id", params = "cityId", spec = Equal.class),
                     @Spec(path = "person.gender.id", params = "genderId", spec = Equal.class),

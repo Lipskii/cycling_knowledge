@@ -10,23 +10,35 @@ import DeleteModal from "../../../components/CommonModals/DeleteModal";
 import SelectInputForm from "../../../components/CommonForms/SelectInputForm";
 import Loader from "react-loader-spinner";
 import DBRacesRaceTable from "./DBRacesRaceTable";
+import moment from "moment";
 
 class DBRacesEditStagesModal extends Component {
     state = {
-        showNewStageModal: false,
+        newStage: false,
+        editStage: false,
+        editStageId: '',
         seasons: [],
         race: this.props.race,
         showCompletedModal: false,
         completedModalStatus: false,
         completedModalText: '',
         showAddingModal: false,
-        showDeleteModal: false
+        showDeleteModal: false,
+        initialFinishCity: '',
+        initialDate: '',
+        initialDistance: '',
+        initialNumber: '',
+        initialSeasonId: '',
+        initialStartCity: '',
+        stages: [],
     }
+
 
     componentDidMount() {
         axios.get("/api/seasons")
             .then(res => {
                 this.setState({
+                    stages: this.props.race.stages,
                     seasons: res.data
                 })
             })
@@ -36,31 +48,50 @@ class DBRacesEditStagesModal extends Component {
         axios.get("/api/races?id=" + this.state.race.id)
             .then(res => {
                 this.setState({
-                    race: res.data[0]
+                    race: res.data[0],
+                    stages: res.data[0].stages
                 })
             })
     }
 
+    filterSeasons(seasonId) {
+        if(seasonId === ""){
+            this.setState({
+                stages: this.state.race.stages
+            })
+        } else {
+            this.setState({
+                stages: this.state.race.stages.filter(stage => parseInt(stage.season.id) === parseInt(seasonId))
+            })
+        }
+    }
+
     editStage = (stage) => {
-        console.log(this.state)
+        console.log("ELO")
+        console.log(stage)
         let successful = false
         this.setState({
-            showAddingModal: true
+            showAddingModal: true,
         }, () => {
-            axios.put('/api/races/' + this.state.raceToEdit.id, {
-                name: values.name,
-                country: this.state.countries.find(country => country.id === parseInt(values.countryId)),
-                category: this.state.categories.find(category => category.id === parseInt(values.categoryId))
+            axios.put('/api/stages/' + this.state.editStageId, {
+                number: stage.number,
+                date: stage.date,
+                race: this.props.race,
+                season: this.state.seasons.find(season => season.id === parseInt(stage.seasonId)),
+                startCity: stage.startCity,
+                finishCity: stage.finishCity,
+                distance: stage.distance
             })
                 .then(res => {
                     successful = true
-                    this.filter()
+                    console.log(res)
+                    this.updateRace()
                 })
                 .catch(error => console.log(error))
                 .finally(() => {
                     let modalText
                     if (successful) {
-                        modalText = values.name + " edited."
+                        modalText = stage.startCity + "-" + stage.finishCity + " edited."
                     } else {
                         modalText = "Ups, there was a problem. Try again."
                     }
@@ -68,8 +99,7 @@ class DBRacesEditStagesModal extends Component {
                         showCompletedModal: true,
                         completedModalText: modalText,
                         completedModalStatus: successful,
-                        showAddingModal: false,
-                        editRace: !successful
+                        showAddingModal: false
                     })
                 })
         })
@@ -89,7 +119,8 @@ class DBRacesEditStagesModal extends Component {
     postStage = (values) => {
         let successful = false
         this.setState({
-            showAddingModal: true
+            showAddingModal: true,
+            editStage: true
         }, () => {
             axios.post('/api/stages', {
                 number: values.number,
@@ -109,7 +140,7 @@ class DBRacesEditStagesModal extends Component {
                 .finally(() => {
                     let modalText
                     if (successful) {
-                        modalText = values.name + " added."
+                        modalText = values.startCity + "-" + values.finishCity + " added."
                     } else {
                         modalText = "Ups, there was a problem. Try again."
                     }
@@ -125,8 +156,6 @@ class DBRacesEditStagesModal extends Component {
     }
 
     render() {
-        console.log(this.state)
-        console.log(this.state.race.stages)
         return (
             <Modal show={this.props.show} size={"xl"} scrollable={true} onHide={this.props.onHide}>
 
@@ -155,35 +184,79 @@ class DBRacesEditStagesModal extends Component {
                     /> : null}
 
 
-                <DBRacesStageModal
-                    show={this.state.showNewStageModal}
-                    onHide={() => {
-                        this.setState({
-                            showNewStageModal: false
-                        })
-                    }}
-                    onSubmit={ (values) => {
-                        this.setState({
-                            showNewStageModal: true,
-                        },() => {
-                            this.postStage(values)
-                        })
-                    }}
-                    initialFinishCity={''}
-                    initialDate={''}
-                    initialDistance={''}
-                    initialNumber={''}
-                    initialSeasonId={''}
-                    initialStartCity={''}
-                    seasons={this.state.seasons}
-                    mainHeader={"Adding new Stage"}
-                />
+                {this.state.newStage ?
+                    <DBRacesStageModal
+                        show={this.state.newStage}
+                        onHide={() => {
+                            this.setState({
+                                newStage: false
+                            })
+                        }}
+                        onSubmit={ (values) => {
+                            this.setState({
+                                newStage: true,
+                            },() => {
+                                this.postStage(values)
+                            })
+                        }}
+                        initialFinishCity={''}
+                        initialDate={''}
+                        initialDistance={''}
+                        initialNumber={''}
+                        initialSeasonId={''}
+                        initialStartCity={''}
+                        seasons={this.state.seasons}
+                        mainHeader={"Adding new Stage"}
+                    />
+                    : null}
+
+                {this.state.editStage ?
+                    <DBRacesStageModal
+                        show={this.editStage}
+                        onHide={() => {
+                            this.setState({
+                                editStage: false
+                            })
+                        }}
+                        onSubmit={ (values) => {
+                            this.setState({
+                                editStage: true,
+                            },() => {
+                                this.editStage(values)
+                            })
+                        }}
+                        initialFinishCity={this.state.initialFinishCity}
+                        initialDate={this.state.initialDate}
+                        initialDistance={this.state.initialDistance}
+                        initialNumber={this.state.initialNumber}
+                        initialSeasonId={this.state.initialSeasonId}
+                        initialStartCity={this.state.initialStartCity}
+                        seasons={this.state.seasons}
+                        mainHeader={"Adding new Stage"}
+                    />
+                    : null}
 
                 <Modal.Header closeButton>
                     <Header3>Edit Stages of {this.state.race.name}</Header3>
                 </Modal.Header>
                 <Modal.Body>
-                    Stages:
+                    <h3> Stages:</h3>
+
+                    <div style={{marginBottom: "20px", marginTop: "20px"}}>
+                    <SelectInputForm
+                        title={"Season"}
+                        defaultValue={""}
+                        onChange={e => {
+                           this.filterSeasons(e.target.value)
+                        }}
+                    >
+                        <option value={""}>All seasons</option>
+                        {this.state.seasons.map(season =>
+                            <option key={season.id} value={season.id}>
+                                {season.season}
+                            </option>)}
+                    </SelectInputForm>
+                    </div>
                     <div>
                             <Table bordered hover striped size={"sm"}>
                                 <thead>
@@ -196,7 +269,7 @@ class DBRacesEditStagesModal extends Component {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.state.race.stages.map(stage =>
+                                {this.state.stages.map(stage =>
                                          (
                                             <tr key={stage.id} id={stage.id}>
                                                 <td>{stage.number}</td>
@@ -206,7 +279,22 @@ class DBRacesEditStagesModal extends Component {
                                                 <td>
                                                     <TableButton id={stage.id} name={stage.id} size="sm"
                                                                  variant={"outline-info"}
-                                                                 onClick={() => this.editStage(stage)}>
+                                                                 onClick={() => {
+                                                                     this.setState({
+                                                                         initialFinishCity: stage.finishCity,
+                                                                         initialDate: moment(stage.date),
+                                                                         initialDistance: stage.distance,
+                                                                         initialNumber: stage.number,
+                                                                         initialSeasonId: stage.season.id,
+                                                                         initialStartCity: stage.startCity,
+                                                                         editStageId: stage.id
+                                                                     },() => {
+                                                                         console.log(this.state)
+                                                                         this.setState({
+                                                                             editStage: true
+                                                                         })
+                                                                     })
+                                                                 }}>
                                                         Edit Stage
                                                     </TableButton>
                                                     <TableButton id={stage.id} name={stage.id} size="sm"
@@ -233,7 +321,13 @@ class DBRacesEditStagesModal extends Component {
                             variant={"success"}
                             onClick={() => {
                                 this.setState({
-                                    showNewStageModal: true
+                                    initialFinishCity: '',
+                                    initialDate: '',
+                                    initialDistance: '',
+                                    initialNumber: '',
+                                    initialSeasonId: '',
+                                    initialStartCity: '',
+                                    newStage: true,
                                 })
                             }}>
                         Add stage
@@ -242,6 +336,8 @@ class DBRacesEditStagesModal extends Component {
             </Modal>
         )
     }
+
+
 }
 
 export default DBRacesEditStagesModal

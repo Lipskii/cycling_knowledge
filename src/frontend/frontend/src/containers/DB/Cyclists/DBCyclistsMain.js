@@ -28,6 +28,7 @@ class DBCyclistsMain extends Component {
         filterCountryId: '',
         filterGenderId: '',
         filterTeamId: '',
+        filterIsActive: '',
         genders: [],
         newCyclist: false,
         showAddingModal: false,
@@ -42,8 +43,9 @@ class DBCyclistsMain extends Component {
             axios.get('/api/countries'),
             axios.get('/api/countries?hasPeople=true'),
             axios.get('/api/cities'),
-            axios.get('/api/genders')
-        ]).then(axios.spread((cyclistsData, countriesData, countriesWithPeopleData, citiesData, gendersData )=> {
+            axios.get('/api/genders'),
+            axios.get('/api/teams')
+        ]).then(axios.spread((cyclistsData, countriesData, countriesWithPeopleData, citiesData, gendersData, teamsData )=> {
             this.setState({
                 countries: countriesData.data,
                 countriesWithCyclists: countriesWithPeopleData.data,
@@ -51,6 +53,7 @@ class DBCyclistsMain extends Component {
                 cyclistsLoading: false,
                 cities: citiesData.data,
                 genders: gendersData.data,
+                teams: teamsData.data
             })
         }))
             .catch(error => console.log(error))
@@ -69,7 +72,18 @@ class DBCyclistsMain extends Component {
     }
 
     filter = () => {
-
+        axios.all([
+            axios.get('/api/cyclists?countryId=' + this.state.filterCountryId
+                + '&genderId=' + this.state.filterGenderId
+                + '&teamId=' + this.state.filterTeamId)
+        ])
+            .then(axios.spread((response) => {
+                this.setState({
+                    cyclistsLoading: false,
+                    races: response.data
+                },() => console.log(response))
+            }))
+            .catch(error => console.log(error))
     }
 
     render() {
@@ -133,8 +147,7 @@ class DBCyclistsMain extends Component {
                             this.setState({
                                 activePage: 1,
                                 cyclistsLoading: true,
-                                filterCityId: '',
-                                filterClubId: '',
+                                filterTeamId: '',
                                 filterCountryId: e.target.value
                             }, () => this.filter())
                         }}
@@ -164,25 +177,6 @@ class DBCyclistsMain extends Component {
                         ))}
                     </SelectInputForm>
 
-                    {/*City*/}
-                    <SelectInputForm
-                        key={this.state.citiesWithCyclists}
-                        title={"City:"}
-                        disabled={this.state.citiesWithCyclists.length < 1}
-                        defaultValue={""}
-                        onChange={e => {
-                            this.setState({
-                                activePage: 1,
-                                filterCityId: e.target.value
-                            }, () => this.filter())
-                        }}
-                    >
-                        <option value={""}>All cities</option>
-                        {this.state.citiesWithCyclists.map(city => (
-                            <option key={city.id} value={city.id} name={city.name}>{city.name}</option>
-                        ))}
-                    </SelectInputForm>
-
                     {/*Teams*/}
                     <SelectInputForm
                         title={"Team:"}
@@ -200,6 +194,20 @@ class DBCyclistsMain extends Component {
                             <option key={club.id} value={club.id} name={club.name}>{club.name}</option>
                         ))}
                     </SelectInputForm>
+
+                    {/*<SelectInputForm*/}
+                    {/*    title={"is active:"}*/}
+                    {/*    defaultValue={""}*/}
+                    {/*    onChange={e => {*/}
+                    {/*        this.setState({*/}
+                    {/*            activePage: 1,*/}
+                    {/*            filterIsActive: e.target.value*/}
+                    {/*        }, () => this.filter())*/}
+                    {/*    }}*/}
+                    {/*>*/}
+                    {/*    <option value={true}>Yes</option>*/}
+                    {/*    <option value={false}>No</option>*/}
+                    {/*</SelectInputForm>*/}
 
                     {/*cyclists*/}
                     {this.state.cyclistsLoading ?
@@ -240,19 +248,27 @@ class DBCyclistsMain extends Component {
                     })} variant={"success"}>New Athlete</Button>
                 </StyledDiv2Right1200>
 
-                {/*{this.state.newCyclist ?*/}
-                {/*    <DBNewCyclistForm*/}
-                {/*        show={this.state.newCyclist}*/}
-                {/*        onHide={() => this.setState({*/}
-                {/*            newCyclist: false*/}
-                {/*        })}*/}
-                {/*        onSubmit={(values) => {*/}
-                {/*            this.setState({*/}
-                {/*                showAddingModal: true*/}
-                {/*            }, () => this.postCyclist(values))*/}
-                {/*        }}*/}
-                {/*    />*/}
-                {/*    : null}*/}
+                {this.state.newCyclist ?
+                    <DBNewCyclistForm
+                        show={this.state.newCyclist}
+                        firstName={''}
+                        lastName={''}
+                        dateOfBirth={''}
+                        genderId={''}
+                        countryId={''}
+                        teams={this.state.teams}
+                        genders={this.state.genders}
+                        countries={this.state.countries}
+                        onHide={() => this.setState({
+                            newCyclist: false
+                        })}
+                        onSubmit={(values) => {
+                            this.setState({
+                                showAddingModal: true
+                            }, () => this.postCyclist(values))
+                        }}
+                    />
+                    : null}
 
 
             </React.Fragment>
