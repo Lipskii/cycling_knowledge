@@ -50,6 +50,9 @@ public class Person implements Comparable<Person> {
     @JoinColumn(name = "city_idcity")
     private City city;
 
+    @Column(name = "photo")
+    private String photo;
+
 
     public Person() {
     }
@@ -63,8 +66,10 @@ public class Person implements Comparable<Person> {
         this.city = city;
     }
 
-    public int getId() {
-        return id;
+    public int getId() { return id; }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getFirstName() {
@@ -113,6 +118,14 @@ public class Person implements Comparable<Person> {
 
     public void setCity(City city) {
         this.city = city;
+    }
+
+    public Optional<String> getPhoto() {
+        return Optional.ofNullable(photo);
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     @Override

@@ -14,9 +14,12 @@ import {DBCyclistsValidationSchema} from "./DBCyclistValidationSchema";
 const DBNewCyclistForm = (props) => {
 
     const [showModal, setShowModal] = useState(false);
-    const [countries, setCountries] = useState(props.countries)
-    const [teams, setTeams] = useState(props.teams)
-    const [genders, setGenders] = useState(props.genders)
+    // const [countries, setCountries] = useState(props.countries)
+    // const [teams, setTeams] = useState(props.teams)
+    // const [genders, setGenders] = useState(props.genders)
+    useEffect(() => {
+        bsCustomFileInput.init()
+    })
     return (
         <React.Fragment>
             <Formik
@@ -25,15 +28,20 @@ const DBNewCyclistForm = (props) => {
                     firstName: props.firstName,
                     lastName: props.lastName,
                     dateOfBirth: props.dateOfBirth,
-                    gender: props.genderId,
+                    genderId: props.genderId,
                     countryId: props.countryId,
+                    // customFile: '',
+                    file: ''
                 }}
                 validationSchema={DBCyclistsValidationSchema}
                 onSubmit={(values) => {
                     props.onSubmit(values)
                 }}
             >{({
-                   handleSubmit
+                   handleSubmit,
+                               setFieldValue,
+                               touched,
+                               errors
 
                }) => (
                 <Modal show={props.show} size={"xl"} scrollable={true} onHide={props.onHide}>
@@ -67,27 +75,40 @@ const DBNewCyclistForm = (props) => {
                             />
 
                             <FormikSelectInputForm
-                                key={countries}
+                                key={props.countries}
                                 name="countryId"
                                 label="Country*:"
                                 // disabled={props.countries.length < 1}
                             >
                                 <option value={""} disabled>Choose...</option>
-                                {countries.map(country => (
+                                {props.countries.map(country => (
                                     <option key={country.id} value={country.id}>{country.name}</option>
                                 ))}
                             </FormikSelectInputForm>
 
                             <FormikSelectInputForm
-                                key={"gender"}
+                                key={props.genders}
                                 name="genderId"
                                 label="Gender*:"
                             >
                                 <option value={""} disabled>Choose...</option>
-                                {genders.map(gender => (
+                                {props.genders.map(gender => (
                                     <option key={gender.id} value={gender.id}>{gender.gender}</option>
                                 ))}
                             </FormikSelectInputForm>
+
+
+                            <Form.Group as={Row}>
+                                <Form.Label column sm={2}>Photo:</Form.Label>
+                                <Col sm={10}>
+                                    <input id="file" name="file" type="file" onChange={(event) => {
+                                        setFieldValue("file", event.currentTarget.files[0]);
+                                    }}/>
+                                    {touched.file && errors.file ? (
+                                        <ErrorLabel>{errors.file}</ErrorLabel>
+                                    ) : null}
+                                </Col>
+                            </Form.Group>
 
 
                             <StyledDiv2Right1200>

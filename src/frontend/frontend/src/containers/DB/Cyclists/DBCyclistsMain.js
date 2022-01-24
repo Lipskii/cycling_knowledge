@@ -31,6 +31,7 @@ class DBCyclistsMain extends Component {
         filterIsActive: '',
         genders: [],
         newCyclist: false,
+        editCyclist: false,
         showAddingModal: false,
         showDeleteModal: false,
         showCompletedModal: false,
@@ -59,8 +60,65 @@ class DBCyclistsMain extends Component {
             .catch(error => console.log(error))
     }
 
-    editAthlete = (values) => {
-
+    editCyclist = (values) => {
+        // console.log(values)
+        // let successful = true
+        // const person = {
+        //     firstName: values.firstName,
+        //     lastName: values.lastName,
+        //     gender: this.state.genders.find(gender => gender.id === parseInt(values.genderId)),
+        //     birthdate: values.birthdate,
+        //     country: this.state.countries.find(country => country.id === parseInt(values.countryId)),
+        //
+        // }
+        // axios.put('/api/people/' + this.state.athleteToEdit.person.id, {...person})
+        //     .then(res => {
+        //         console.log(res)
+        //         axios.put('/api/skiJumpers/' + this.state.athleteToEdit.id, {
+        //             person: res.data,
+        //             isActive: values.active,
+        //             fisCode: values.fisCode,
+        //             skis: this.state.skis.find(skis => skis.id === parseInt(values.skisId)),
+        //             skiClub: this.state.clubsForForm.find(club => club.id === parseInt(values.clubId))
+        //         })
+        //             .then((res) => {
+        //                 const formData = new FormData();
+        //                 formData.append('file', values.file)
+        //                 console.log("photo")
+        //                 axios.post('/api/people/photo/' + res.data.person.id, formData,)
+        //                     .then((res) => {
+        //                         console.log(res)
+        //                         this.filter()
+        //                     })
+        //                     .catch(error => {
+        //                         console.log(error)
+        //                         successful = false
+        //                     })
+        //             })
+        //             .catch(error => {
+        //                 console.log(error)
+        //                 successful = false
+        //             })
+        //     })
+        //     .catch(error => {
+        //         successful = false
+        //         console.log(error)
+        //     })
+        //     .finally(() => {
+        //         let modalText
+        //         if (successful) {
+        //             modalText = values.firstName + " " + values.lastName + " updated."
+        //         } else {
+        //             modalText = "Ups, there was a problem. Try again."
+        //         }
+        //         this.setState({
+        //             showCompletedModal: true,
+        //             completedModalText: modalText,
+        //             completedModalStatus: successful,
+        //             showAddingModal: false,
+        //             editAthlete: false,
+        //         })
+        //     })
     }
 
     deleteAthlete = () => {
@@ -68,7 +126,49 @@ class DBCyclistsMain extends Component {
     }
 
     postCyclist = (values) => {
-
+        console.log(values)
+        let successful = true
+        let modalText = values.firstName + " " + values.lastName + " added."
+        console.log(values.countryId)
+        axios.post('/api/people', {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            gender: this.state.genders.find(gender => gender.id === parseInt(values.genderId)),
+            dateOfBirth: values.dateOfBirth,
+            country: this.state.countries.find(country => country.id === parseInt(values.countryId))
+        })
+            .then(res => {
+                axios.post('api/cyclists', {
+                    person: res.data,
+                })
+                    .then(res => {
+                        const formData = new FormData();
+                        formData.append('file', values.file)
+                        axios.post('/api/people/photo/' + res.data.person.id, formData,)
+                            .then(() => {
+                                this.filter()
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                successful = false
+                                modalText = "Athlete added, but there was a problem with photo."
+                            })
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        successful = false
+                        modalText = "Ups, there was a problem. Try again."
+                    })
+            })
+            .finally(() => {
+                this.setState({
+                    showCompletedModal: true,
+                    completedModalText: modalText,
+                    completedModalStatus: successful,
+                    showAddingModal: false,
+                    newCyclist: false,
+                }, () => this.filter())
+            })
     }
 
     filter = () => {
@@ -263,6 +363,7 @@ class DBCyclistsMain extends Component {
                             newCyclist: false
                         })}
                         onSubmit={(values) => {
+                            console.log("Fsdafsgd")
                             this.setState({
                                 showAddingModal: true
                             }, () => this.postCyclist(values))
