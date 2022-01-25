@@ -1,9 +1,13 @@
-import React from "react";
+import React, {useState} from "react";
 import {Pagination, Table} from "react-bootstrap";
 import {TableButton} from "../../../components/StyledComponents";
+import DBCyclistsTeamModal from "./DBCyclistsTeamModal";
 
 
 const DBCyclistsCyclistsTable = (props) => {
+
+    const [showTeamsModal, setShowTeamsModal] = useState(false)
+
 
     return (
         <div>
@@ -11,31 +15,38 @@ const DBCyclistsCyclistsTable = (props) => {
                 <thead>
                 <tr>
                     <th>Cyclist</th>
-                    <th>UCI Code</th>
                     <th>Gender</th>
                     <th>Birthdate</th>
-                    <th>City</th>
                     <th>Country</th>
-                    <th>Team</th>
-                    <th>Active</th>
+                    <th>Teams</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
                 {props.cyclists.map(cyclist => {
-                    if (((props.activePage - 1) * 15 <= props.cyclists.indexOf(cyclist)) && (props.cyclists.indexOf(cyclist) < props.state.activePage * 15)) {
+                    if (((props.activePage - 1) * 15 <= props.cyclists.indexOf(cyclist)) && (props.cyclists.indexOf(cyclist) < props.activePage * 15)) {
                         return (
                             <tr key={cyclist.id} id={cyclist.id}>
                                 <td>{cyclist.person.firstName} {cyclist.person.lastName}</td>
-                                <td>{cyclist.uciCode}</td>
-                                <td style={{textAlign: "center"}}>{cyclist.person.gender.gender.charAt(0)}</td>
-                                <td>{cyclist.person.birthdate}</td>
-                                <td>{cyclist.person.city !== null ?
-                                    <div>{cyclist.person.city.name}</div> : <div>no info</div>}</td>
-                                <td>{cyclist.person.country.code}</td>
-                                <td>{cyclist.team !== null ? <div>{cyclist.team.name}</div> :
-                                    <div>no info</div>}</td>
-                                <td>{cyclist.active ? "Yes" : "No"}</td>
+                                <td style={{textAlign: "center"}}>{cyclist.person.gender.gender}</td>
+                                <td>{cyclist.person.dateOfBirth}</td>
+                                <td>{cyclist.person.country.name}</td>
+                                <td>
+                                    {cyclist.teamCyclistSeasons.length > 0 ?
+                                        <div>
+                                            {cyclist.teamCyclistSeasons.map(teamCyclistSeason => {
+                                                return (
+                                                    <ul>
+                                                        {teamCyclistSeason.season.season}: {teamCyclistSeason.team.name}
+                                                    </ul>
+                                                )
+                                            })}
+                                        </div> : null
+                                    }
+                                </td>
+
+                                {/*<td>{cyclist.team !== null ? <div>{cyclist.team.name}</div> :*/}
+                                {/*    <div>no info</div>}</td>*/}
                                 <td>
                                     <TableButton id={cyclist.id} name={cyclist.name} size="sm"
                                                  variant={"info"}
@@ -52,9 +63,27 @@ const DBCyclistsCyclistsTable = (props) => {
                                                  }}>
                                         Edit
                                     </TableButton>
-                                    <TableButton id={cyclist.id} name={cyclist.name} size="sm"
+                                    <TableButton id={cyclist.id} name={cyclist.person.lastName} size="sm"
+                                                 variant={"outline-info"}
+                                                 onClick={() => setShowTeamsModal(true)}>
+                                        Edit Teams
+                                    </TableButton>
+
+                                    {showTeamsModal ? <DBCyclistsTeamModal
+                                        teams={props.teams}
+                                        seasons={props.seasons}
+                                        show={showTeamsModal}
+                                        cyclist={cyclist}
+                                        filter={props.filter}
+                                        mainHeader={"Adding teams for " + cyclist.person.lastName}
+                                        onHide={() => {
+                                            setShowTeamsModal(false)
+                                            props.filter()
+                                        }}
+                                        /> : null}
+                                    <TableButton id={cyclist.id} name={cyclist.person.lastName} size="sm"
                                                  variant={"danger"}
-                                                 onClick={props.onDeleteCyclist(cyclist)}
+                                                 onClick={() => props.onDeleteCyclist(cyclist)}
                                     >
                                         Delete
                                     </TableButton>
@@ -63,6 +92,8 @@ const DBCyclistsCyclistsTable = (props) => {
                         )
                     }
                 })}
+
+
                 </tbody>
             </Table>
             <Pagination>{props.items}</Pagination>

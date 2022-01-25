@@ -128,6 +128,14 @@ public class Person implements Comparable<Person> {
         this.photo = photo;
     }
 
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
     @Override
     public int compareTo(Person o) {
         if(!this.lastName.equals(o.lastName)){
@@ -144,8 +152,10 @@ public class Person implements Comparable<Person> {
                 ", lastName='" + lastName + '\'' +
                 ", gender=" + gender +
                 ", cyclist=" + cyclist +
+                ", country=" + country +
                 ", dateOfBirth=" + dateOfBirth +
                 ", city=" + city +
+                ", photo='" + photo + '\'' +
                 '}';
     }
 }

@@ -9,6 +9,7 @@ import SelectInputForm from "../../../components/CommonForms/SelectInputForm";
 import Loader from "react-loader-spinner";
 import DBCyclistsCyclistsTable from "./DBCyclistsCyclistsTable";
 import DBNewCyclistForm from "./DBNewCyclistForm";
+import moment from "moment";
 
 class DBCyclistsMain extends Component {
 
@@ -32,6 +33,7 @@ class DBCyclistsMain extends Component {
         genders: [],
         newCyclist: false,
         editCyclist: false,
+        seasons: [],
         showAddingModal: false,
         showDeleteModal: false,
         showCompletedModal: false,
@@ -45,8 +47,10 @@ class DBCyclistsMain extends Component {
             axios.get('/api/countries?hasPeople=true'),
             axios.get('/api/cities'),
             axios.get('/api/genders'),
-            axios.get('/api/teams')
-        ]).then(axios.spread((cyclistsData, countriesData, countriesWithPeopleData, citiesData, gendersData, teamsData )=> {
+            axios.get('/api/teams'),
+            axios.get('/api/seasons')
+        ]).then(axios.spread((cyclistsData, countriesData, countriesWithPeopleData,
+                              citiesData, gendersData, teamsData,seasonsData )=> {
             this.setState({
                 countries: countriesData.data,
                 countriesWithCyclists: countriesWithPeopleData.data,
@@ -54,82 +58,98 @@ class DBCyclistsMain extends Component {
                 cyclistsLoading: false,
                 cities: citiesData.data,
                 genders: gendersData.data,
-                teams: teamsData.data
+                teams: teamsData.data,
+                seasons: seasonsData.data
             })
         }))
             .catch(error => console.log(error))
     }
 
     editCyclist = (values) => {
-        // console.log(values)
-        // let successful = true
-        // const person = {
-        //     firstName: values.firstName,
-        //     lastName: values.lastName,
-        //     gender: this.state.genders.find(gender => gender.id === parseInt(values.genderId)),
-        //     birthdate: values.birthdate,
-        //     country: this.state.countries.find(country => country.id === parseInt(values.countryId)),
-        //
-        // }
-        // axios.put('/api/people/' + this.state.athleteToEdit.person.id, {...person})
-        //     .then(res => {
-        //         console.log(res)
-        //         axios.put('/api/skiJumpers/' + this.state.athleteToEdit.id, {
-        //             person: res.data,
-        //             isActive: values.active,
-        //             fisCode: values.fisCode,
-        //             skis: this.state.skis.find(skis => skis.id === parseInt(values.skisId)),
-        //             skiClub: this.state.clubsForForm.find(club => club.id === parseInt(values.clubId))
-        //         })
-        //             .then((res) => {
-        //                 const formData = new FormData();
-        //                 formData.append('file', values.file)
-        //                 console.log("photo")
-        //                 axios.post('/api/people/photo/' + res.data.person.id, formData,)
-        //                     .then((res) => {
-        //                         console.log(res)
-        //                         this.filter()
-        //                     })
-        //                     .catch(error => {
-        //                         console.log(error)
-        //                         successful = false
-        //                     })
-        //             })
-        //             .catch(error => {
-        //                 console.log(error)
-        //                 successful = false
-        //             })
-        //     })
-        //     .catch(error => {
-        //         successful = false
-        //         console.log(error)
-        //     })
-        //     .finally(() => {
-        //         let modalText
-        //         if (successful) {
-        //             modalText = values.firstName + " " + values.lastName + " updated."
-        //         } else {
-        //             modalText = "Ups, there was a problem. Try again."
-        //         }
-        //         this.setState({
-        //             showCompletedModal: true,
-        //             completedModalText: modalText,
-        //             completedModalStatus: successful,
-        //             showAddingModal: false,
-        //             editAthlete: false,
-        //         })
-        //     })
+        console.log(values)
+        let successful = true
+        const person = {
+            firstName: values.firstName,
+            lastName: values.lastName,
+            gender: this.state.genders.find(gender => gender.id === parseInt(values.genderId)),
+            dateOfBirth: values.dateOfBirth,
+            country: this.state.countries.find(country => country.id === parseInt(values.countryId))
+        }
+        axios.put('/api/people/' + this.state.cyclistToEdit.person.id, {...person})
+            .then(res => {
+                console.log(res)
+                axios.put('/api/cyclists/' + this.state.cyclistToEdit.id, {
+                    person: res.data,
+                })
+                    .then((res) => {
+                        const formData = new FormData();
+                        formData.append('file', values.file)
+                        console.log("photo")
+                        axios.post('/api/people/photo/' + res.data.person.id, formData,)
+                            .then((res) => {
+                                console.log(res)
+                                this.filter()
+                            })
+                            .catch(error => {
+                                console.log(error)
+                                successful = false
+                            })
+                    })
+                    .catch(error => {
+                        console.log(error)
+                        successful = false
+                    })
+            })
+            .catch(error => {
+                successful = false
+                console.log(error)
+            })
+            .finally(() => {
+                let modalText
+                if (successful) {
+                    modalText = values.firstName + " " + values.lastName + " updated."
+                } else {
+                    modalText = "Ups, there was a problem. Try again."
+                }
+                this.setState({
+                    showCompletedModal: true,
+                    completedModalText: modalText,
+                    completedModalStatus: successful,
+                    showAddingModal: false,
+                    editCyclist: false,
+                })
+            })
     }
 
     deleteAthlete = () => {
-
+        console.log(this.state.cyclistToDelete)
+        console.log("SDafsdsagsg")
+        axios.delete("/api/cyclists/" + this.state.cyclistToDelete.id)
+            .then(() => {
+                this.setState({
+                    showCompletedModal: true,
+                    completedModalText:  this.state.cyclistToDelete.person.firstName + " " + this.state.cyclistToDelete.person.lastName + " deleted.",
+                    completedModalStatus: true,
+                    showDeleteModal: false
+                },()=> this.filter())
+            })
+            .catch(() => {
+                this.setState({
+                    showCompletedModal: true,
+                    completedModalText: "Something went wrong, try again.",
+                    completedModalStatus: false,
+                })
+            })
     }
 
     postCyclist = (values) => {
+        console.log(this.state)
         console.log(values)
         let successful = true
         let modalText = values.firstName + " " + values.lastName + " added."
         console.log(values.countryId)
+        let found = this.state.countries.find(country => country.id === parseInt(values.countryId))
+        console.log(found)
         axios.post('/api/people', {
             firstName: values.firstName,
             lastName: values.lastName,
@@ -180,7 +200,7 @@ class DBCyclistsMain extends Component {
             .then(axios.spread((response) => {
                 this.setState({
                     cyclistsLoading: false,
-                    races: response.data
+                    cyclists: response.data
                 },() => console.log(response))
             }))
             .catch(error => console.log(error))
@@ -206,7 +226,6 @@ class DBCyclistsMain extends Component {
                 </Pagination.Item>
             );
         }
-
 
         return (
             <React.Fragment>
@@ -326,13 +345,16 @@ class DBCyclistsMain extends Component {
                         activePage={this.state.activePage}
                         cyclists={this.state.cyclists}
                         items={items}
+                        seasons={this.state.seasons}
+                        teams={this.state.teams}
+                        filter={() => this.filter()}
                         onDeleteCyclist={cyclist => {
                             this.setState({
                                 showDeleteModal: true,
                                 cyclistToDelete: cyclist
-                            })}
+                            },() => this.deleteAthlete())}
                         }
-                        onEditCyclist={o => {
+                        onEditCyclist={(o) => {
                             this.setState({
                                 cyclistToEdit: o,
                                 editCyclist: true,
@@ -367,6 +389,28 @@ class DBCyclistsMain extends Component {
                             this.setState({
                                 showAddingModal: true
                             }, () => this.postCyclist(values))
+                        }}
+                    />
+                    : null}
+
+                {this.state.editCyclist ?
+                    <DBNewCyclistForm
+                        show={this.state.editCyclist}
+                        firstName={this.state.cyclistToEdit.person.firstName}
+                        lastName={this.state.cyclistToEdit.person.lastName}
+                        dateOfBirth={moment(this.state.cyclistToEdit.person.dateOfBirth)}
+                        genderId={this.state.cyclistToEdit.person.gender.id}
+                        countryId={this.state.cyclistToEdit.person.country.id}
+                        teams={this.state.teams}
+                        genders={this.state.genders}
+                        countries={this.state.countries}
+                        onHide={() => this.setState({
+                           editCyclist: false
+                        })}
+                        onSubmit={(values) => {
+                            this.setState({
+                                showAddingModal: true
+                            }, () => this.editCyclist(values))
                         }}
                     />
                     : null}

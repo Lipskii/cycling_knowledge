@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "stage")
@@ -40,6 +41,11 @@ public class Stage {
 
     @Column(name = "distance")
     private BigDecimal distance;
+
+    @JsonIgnoreProperties(value = "stage", allowSetters = true)
+    @OrderBy("rank")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "stage") //, cascade = {CascadeType.PERSIST,CascadeType.REMOVE}
+    private List<Result> results;
 
     public Stage() {
     }
@@ -116,6 +122,14 @@ public class Stage {
 
     public void setDistance(BigDecimal distance) {
         this.distance = distance;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 
     @Override

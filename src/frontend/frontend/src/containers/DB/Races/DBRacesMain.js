@@ -201,6 +201,7 @@ class DBRacesMain extends Component {
                 <DBRacesEditStagesModal
                     show={this.state.showEditStagesModal}
                     race={this.state.raceToEditStages}
+                    filter={this.filter}
                     onHide={() => this.setState({
                         showEditStagesModal: false,
                         raceToEditStages: ''

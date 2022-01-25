@@ -2,6 +2,7 @@ package com.example.cycling_knowledge.controller;
 
 
 import com.example.cycling_knowledge.entity.Cyclist;
+import com.example.cycling_knowledge.entity.TeamCyclistSeason;
 import com.example.cycling_knowledge.service.CyclistService;
 import net.kaczmarzyk.spring.data.jpa.domain.Between;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
@@ -55,6 +56,29 @@ public class CyclistController {
     public Cyclist addCyclist(@RequestBody Cyclist cyclist) {
         cyclistService.save(cyclist);
         return cyclist;
+    }
+
+    @PostMapping("/teamSeason")
+    public TeamCyclistSeason addTeamSeason(@RequestBody TeamCyclistSeason teamCyclistSeason) {
+        cyclistService.addTeamSeason(teamCyclistSeason);
+        return teamCyclistSeason;
+    }
+
+    @DeleteMapping("/teamSeason/{id}")
+    public void deleteTeamSeason(@PathVariable("id") int id) {
+        cyclistService.deleteTeamCyclistSeason(id);
+    }
+
+    @DeleteMapping("/{cyclistId}")
+    public void delete(@PathVariable("cyclistId") int cyclistId) {
+        cyclistService.deleteById(cyclistId);
+    }
+
+    @PutMapping(value = "/{cyclistId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public Cyclist update(@RequestBody Cyclist c, @PathVariable("cyclistId") int cyclistId) {
+        return cyclistService.updateCyclist(cyclistId,c);
+
     }
 
 }

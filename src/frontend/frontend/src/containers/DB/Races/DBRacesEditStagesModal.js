@@ -11,6 +11,8 @@ import SelectInputForm from "../../../components/CommonForms/SelectInputForm";
 import Loader from "react-loader-spinner";
 import DBRacesRaceTable from "./DBRacesRaceTable";
 import moment from "moment";
+import DBRacesStageAddResultsModal from "./DBRacesStageAddResultsModal";
+import DBCyclistsTeamModal from "../Cyclists/DBCyclistsTeamModal";
 
 class DBRacesEditStagesModal extends Component {
     state = {
@@ -31,6 +33,7 @@ class DBRacesEditStagesModal extends Component {
         initialSeasonId: '',
         initialStartCity: '',
         stages: [],
+        showResultsModal: false
     }
 
 
@@ -297,6 +300,29 @@ class DBRacesEditStagesModal extends Component {
                                                                  }}>
                                                         Edit Stage
                                                     </TableButton>
+                                                    <TableButton id={stage.id} name={stage.id} size="sm"
+                                                                 variant={"outline-success"}
+                                                                 onClick={() => {
+                                                                     this.setState({
+                                                                         showResultsModal: true
+                                                                     })
+                                                                 }}
+                                                    >
+                                                        Add results
+                                                    </TableButton>
+
+                                                    {this.state.showResultsModal ?
+                                                    <DBRacesStageAddResultsModal
+                                                        show={this.state.showResultsModal}
+                                                        stage={stage}
+                                                        filter={this.props.filter}
+                                                        mainHeader={"Adding results"}
+                                                        onHide={() => {
+                                                            this.setState({
+                                                                showResultsModal: false
+                                                            },() => this.props.filter())
+                                                        }}
+                                                        /> : null}
                                                     <TableButton id={stage.id} name={stage.id} size="sm"
                                                                  variant={"danger"}
                                                                  onClick={() => {
