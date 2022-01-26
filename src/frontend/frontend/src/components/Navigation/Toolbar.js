@@ -53,7 +53,6 @@ class Toolbar extends Component {
                             <LinkContainer to="/DBRaces">
                               <NavDropdown.Item>Races</NavDropdown.Item>
                             </LinkContainer>
-                            <NavDropdown.Item>Results</NavDropdown.Item>
                             <LinkContainer to="/DBTeams">
                                 <NavDropdown.Item>Teams</NavDropdown.Item>
                             </LinkContainer>

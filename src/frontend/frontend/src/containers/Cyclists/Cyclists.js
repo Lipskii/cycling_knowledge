@@ -24,7 +24,7 @@ class Cyclists extends Component {
     render() {
         console.log(this.state)
         return (
-            <div style={{marginLeft: "30px", paddingBottom: "10px"}}>
+            <div style={{marginLeft: "30px", paddingBottom: "10px",marginRight: "30px"}}>
                 {!this.state.pageLoading ? <Container fluid>
                     <Row>
                         <SearchCyclists/>

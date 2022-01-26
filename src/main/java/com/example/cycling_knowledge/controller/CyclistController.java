@@ -8,6 +8,7 @@ import net.kaczmarzyk.spring.data.jpa.domain.Between;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
 import net.kaczmarzyk.spring.data.jpa.domain.EqualIgnoreCase;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.And;
+import net.kaczmarzyk.spring.data.jpa.web.annotation.Join;
 import net.kaczmarzyk.spring.data.jpa.web.annotation.Spec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -35,6 +36,7 @@ public class CyclistController {
     @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public List<Cyclist> getCyclist(
+            @Join(path = "teamCyclistSeasons", alias = "o")
             @And({
                     @Spec(path = "id", params = "id", spec = Equal.class),
                     @Spec(path = "person.id", params = "personId", spec = Equal.class),
@@ -44,10 +46,10 @@ public class CyclistController {
                     @Spec(path = "person.city.id", params = "cityId", spec = Equal.class),
                     @Spec(path = "person.gender.id", params = "genderId", spec = Equal.class),
                     @Spec(path = "person.lastName", params = "lastNameLike=", spec = EqualIgnoreCase.class),
-                    @Spec(path = "teamCyclistSeason.team.id", params="teamId", spec = Equal.class),
-                    @Spec(path = "teamCyclistSeason.season.season", params="season", spec = Equal.class),
-                    @Spec(path="person.birthdate", params={"bornAfter","bornBefore"}, spec= Between.class),
-                    @Spec(path="person.birthdate", params="bornOn", spec=Equal.class)
+                    @Spec(path = "o.team.id", params="teamId", spec = Equal.class),
+//                    @Spec(path = "teamCyclistSeason.season.season", params="season", spec = Equal.class),
+                    @Spec(path="person.dateOfBirth", params={"bornAfter","bornBefore"}, spec= Between.class),
+                    @Spec(path="person.dateOfBirth", params="bornOn", spec=Equal.class)
             }) Specification<Cyclist> spec) {
         return cyclistService.get(spec, Sort.by("person.lastName"));
     }

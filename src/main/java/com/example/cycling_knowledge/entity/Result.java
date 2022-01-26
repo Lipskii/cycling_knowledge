@@ -16,21 +16,27 @@ public class Result {
     private int id;
 
     @NotNull
-    @Column(name = "rank")
+    @Column(name = "ranking")
     private int rank;
 
     @NotNull
-    @Column(name = "time")
+    @Column(name = "stage_time")
     private int time;
+
+    @ManyToOne(cascade = {CascadeType.DETACH,  CascadeType.REFRESH})
+    @JsonIgnoreProperties(value = "results", allowSetters = true)
+    @JoinColumn(name = "cyclist_idcyclist")
+    private Cyclist cyclist;
 
     @ManyToOne(cascade = {CascadeType.DETACH,  CascadeType.REFRESH})
     @JsonIgnoreProperties(value = "results", allowSetters = true)
     @JoinColumn(name = "stage_idstage")
     private Stage stage;
 
-    public Result(@NotNull int rank, @NotNull int time, Stage stage) {
+    public Result(@NotNull int rank, @NotNull int time, Cyclist cyclist, Stage stage) {
         this.rank = rank;
         this.time = time;
+        this.cyclist = cyclist;
         this.stage = stage;
     }
 
@@ -69,12 +75,22 @@ public class Result {
         this.stage = stage;
     }
 
+    public Cyclist getCyclist() {
+        return cyclist;
+    }
+
+    public void setCyclist(Cyclist cyclist) {
+        this.cyclist = cyclist;
+    }
+
+
     @Override
     public String toString() {
         return "Result{" +
                 "id=" + id +
                 ", rank=" + rank +
                 ", time=" + time +
+                ", cyclist=" + cyclist +
                 ", stage=" + stage +
                 '}';
     }

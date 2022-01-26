@@ -28,6 +28,10 @@ public class Cyclist {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cyclist")
     private List<TeamCyclistSeason> teamCyclistSeasons;
 
+    @JsonIgnoreProperties(value = "cyclist", allowSetters = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cyclist")
+    private List<Result> results;
+
     public Cyclist() {
     }
 
@@ -75,6 +79,14 @@ public class Cyclist {
 
     public List<TeamCyclistSeason> getTeamCyclistSeasons() {
         return teamCyclistSeasons;
+    }
+
+    public List<Result> getResults() {
+        return results;
+    }
+
+    public void setResults(List<Result> results) {
+        this.results = results;
     }
 
     @Override

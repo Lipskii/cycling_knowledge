@@ -2,10 +2,10 @@ import React, {Component} from "react";
 import axios from "axios";
 import {Form, Formik} from "formik";
 import {DBCyclistsTeamValidationSchema} from "../Cyclists/DBCyclistsTeamValidationSchema";
-import {Button, Modal} from "react-bootstrap";
+import {Button, Modal, Table} from "react-bootstrap";
 import AddingModal from "../../../components/CommonModals/AddingModal";
 import CompletedModal from "../../../components/CommonModals/CompletedModal";
-import {Header3, StyledDiv2Right1200} from "../../../components/StyledComponents";
+import {Header3, StyledDiv2Right1200, TableButton} from "../../../components/StyledComponents";
 import FormikSelectInputForm from "../../../components/CommonForms/FormikSelectInputForm";
 import {DBRacesStageResultsValidationSchema} from "./DBRacesStageResultsValidationSchema";
 import FormikTextInputForm from "../../../components/CommonForms/FormikTextInputForm";
@@ -17,51 +17,66 @@ class DBRacesStageAddResultsModal extends Component {
         completedModalText: '',
         showAddingModal: false,
         showDeleteModal: false,
+        results: [],
     }
 
 
     componentDidMount() {
-
+        console.log("ELO")
+        console.log(this.state)
+        console.log(this.props)
+        this.updateResults()
     }
 
     delete = (values) => {
-        // axios.delete("/api/cyclists/teamSeason/" + values.id)
-        //     .then(res => console.log(res))
-        //     .catch(error => console.log(error))
-        //     .finally(() => {
-        //         this.setState({
-        //             showDeleteModal: false,
-        //         }, () => this.props.filter())
-        //     })
+        axios.delete("/api/results/" + values.id)
+            .then(res => this.updateResults())
+            .catch(error => console.log(error))
+            .finally(() => {
+                this.setState({
+                    showDeleteModal: false,
+                })
+            })
+    }
+
+    updateResults = () => {
+        axios.get("/api/results?stageId=" + this.props.stage.id)
+            .then(res => {
+                this.setState({
+                    results: res.data
+                })
+            })
+            .catch(e => console.log(e))
     }
 
     submit = (values) => {
-        // let successful = false
-        // axios.post('/api/cyclists/teamSeason', {
-        //     team: this.props.teams.find(team => team.id === parseInt(values.teamId)),
-        //     season: this.props.seasons.find(season => season.id === parseInt(values.seasonId)),
-        //     cyclist: this.props.cyclist
-        // })
-        //     .then(res => {
-        //         successful = true
-        //         console.log(res)
-        //         this.props.filter()
-        //     })
-        //     .catch(error => console.log(error))
-        //     .finally(() => {
-        //         let modalText
-        //         if (successful) {
-        //             modalText = values.name + " added."
-        //         } else {
-        //             modalText = "Ups, there was a problem. Try again."
-        //         }
-        //         this.setState({
-        //             showCompletedModal: true,
-        //             completedModalText: modalText,
-        //             completedModalStatus: successful,
-        //             showAddingModal: false
-        //         })
-        //     })
+        let successful = false
+        axios.post('/api/results', {
+            rank: values.rank,
+            time: values.time,
+            stage: this.props.stage,
+            cyclist: this.props.cyclists.find(cyclist => cyclist.id === parseInt(values.cyclistId))
+        })
+            .then(res => {
+                successful = true
+                console.log(res)
+                this.updateResults()
+            })
+            .catch(error => console.log(error))
+            .finally(() => {
+                let modalText
+                if (successful) {
+                    modalText = values.name + " added."
+                } else {
+                    modalText = "Ups, there was a problem. Try again."
+                }
+                this.setState({
+                    showCompletedModal: true,
+                    completedModalText: modalText,
+                    completedModalStatus: successful,
+                    showAddingModal: false
+                })
+            })
     }
 
     render() {
@@ -71,8 +86,9 @@ class DBRacesStageAddResultsModal extends Component {
                 <Formik
                     isInitialValid={false}
                     initialValues={{
-                       time: '',
+                        time: '',
                         rank: '',
+                        cyclistId: ''
                     }}
                     validationSchema={DBRacesStageResultsValidationSchema}
                     onSubmit={(values) => {
@@ -117,21 +133,6 @@ class DBRacesStageAddResultsModal extends Component {
                             </Modal.Header>
                             <Modal.Body>
 
-                                <h5>Teams</h5>
-                                {this.props.stage.results.map(result => {
-                                    return (
-                                        <ul>
-                                            elo
-                                            <Button id={result.id} name={result.id} size="sm"
-                                                    variant={"link"}
-                                                    onClick={() => this.delete(result)}
-                                            >
-                                                Delete
-                                            </Button>
-                                        </ul>
-                                    )
-                                })}
-
                                 <small>Fields with (*) are mandatory</small>
 
                                 <FormikTextInputForm
@@ -139,14 +140,78 @@ class DBRacesStageAddResultsModal extends Component {
                                     label="Rank*:"
                                 />
 
+                                <FormikSelectInputForm
+                                    key={this.props.cyclists}
+                                    name="cyclistId"
+                                    label="Cyclist*:"
+                                >
+                                    <option value={""} disabled>Choose...</option>
+                                    {this.props.cyclists.map(cyclist => (
+                                        <option key={cyclist.id} value={cyclist.id}>
+                                            {cyclist.person.firstName} {cyclist.person.lastName}
+                                        </option>
+                                    ))}
+                                </FormikSelectInputForm>
+
                                 <FormikTextInputForm
                                     name="time"
                                     label="Time*:"
                                 />
 
+
+
                                 <StyledDiv2Right1200>
                                     <Button type={"submit"}>Submit</Button>
                                 </StyledDiv2Right1200>
+
+                                <h5>Results:</h5>
+                                {this.state.results.length > 0 ?
+                                    <div>
+                                        <Table>
+
+                                                <thead>
+                                                    <tr>
+                                                    <td>Rank</td>
+                                                    <td>Cyclist</td>
+                                                    <td>Time (s)</td>
+                                                    </tr>
+                                                </thead>
+                                        {this.state.results.map(result => {
+                                            if(result !== undefined){
+                                                return (
+                                                        <tbody>
+                                                        <td>
+                                                            {result.rank}.
+                                                        </td>
+                                                        <td>
+                                                            {result.cyclist.person.firstName} {result.cyclist.person.lastName}
+                                                        </td>
+                                                        <td>
+                                                            {result.time}
+                                                        </td>
+                                                        <td>
+                                                            <TableButton id={result.id} name={result.id} size="sm"
+                                                                         variant={"link"}
+                                                                         onClick={() => this.delete(result)}
+                                                            >
+                                                                Delete
+                                                            </TableButton>
+                                                        </td>
+                                                        </tbody>
+
+                                                )
+                                            } else {
+                                                return(
+                                                    <div>No results yet</div>
+                                                )
+                                            }
+
+                                        })}
+                                        </Table>
+                                    </div> : null
+                                }
+
+
 
                             </Modal.Body>
                         </Form>

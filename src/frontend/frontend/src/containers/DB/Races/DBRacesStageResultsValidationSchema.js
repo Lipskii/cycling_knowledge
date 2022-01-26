@@ -6,6 +6,8 @@ export const DBRacesStageResultsValidationSchema = () => Yup.object(
             .required('Required'),
         time: Yup.number()
             .required('Required'),
+        cyclistId: Yup.number()
+            .required('Required'),
 //,
         //     code: Yup.string()
         //         .test('len', 'Must be exactly 3 characters', val => val.length === 3)

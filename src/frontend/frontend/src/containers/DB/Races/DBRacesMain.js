@@ -20,6 +20,7 @@ class DBRacesMain extends Component {
         activePage: 1,
         categories: [],
         countries: [],
+        cyclists: [],
         editRace: false,
         filterCategoryId: '',
         filterCountryId: '',
@@ -39,13 +40,15 @@ class DBRacesMain extends Component {
         axios.all([
             axios.get("/api/countries"),
             axios.get("/api/races"),
-            axios.get("/api/categories")
-        ]).then(axios.spread((countries,races, categories)=> {
+            axios.get("/api/categories"),
+            axios.get("/api/cyclists")
+        ]).then(axios.spread((countries,races, categories,cyclists)=> {
             this.setState({
                 categories: categories.data,
                 countries: countries.data,
                 races: races.data,
-                racesLoading: false
+                racesLoading: false,
+                cyclists: cyclists.data
             },() => console.log(this.state))
         }))
         // .catch(error => console.log(error))
@@ -201,6 +204,7 @@ class DBRacesMain extends Component {
                 <DBRacesEditStagesModal
                     show={this.state.showEditStagesModal}
                     race={this.state.raceToEditStages}
+                    cyclists={this.state.cyclists}
                     filter={this.filter}
                     onHide={() => this.setState({
                         showEditStagesModal: false,

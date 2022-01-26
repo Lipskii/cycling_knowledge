@@ -16,6 +16,7 @@ import DBCyclistsTeamModal from "../Cyclists/DBCyclistsTeamModal";
 
 class DBRacesEditStagesModal extends Component {
     state = {
+        addResultsStage: '',
         newStage: false,
         editStage: false,
         editStageId: '',
@@ -239,6 +240,20 @@ class DBRacesEditStagesModal extends Component {
                     />
                     : null}
 
+                {this.state.showResultsModal ?
+                    <DBRacesStageAddResultsModal
+                        show={this.state.showResultsModal}
+                        stage={this.state.addResultsStage}
+                        filter={this.props.filter}
+                        cyclists={this.props.cyclists}
+                        mainHeader={"Adding results"}
+                        onHide={() => {
+                            this.setState({
+                                showResultsModal: false
+                            },() => this.props.filter())
+                        }}
+                    /> : null}
+
                 <Modal.Header closeButton>
                     <Header3>Edit Stages of {this.state.race.name}</Header3>
                 </Modal.Header>
@@ -304,6 +319,7 @@ class DBRacesEditStagesModal extends Component {
                                                                  variant={"outline-success"}
                                                                  onClick={() => {
                                                                      this.setState({
+                                                                         addResultsStage: stage,
                                                                          showResultsModal: true
                                                                      })
                                                                  }}
@@ -311,18 +327,6 @@ class DBRacesEditStagesModal extends Component {
                                                         Add results
                                                     </TableButton>
 
-                                                    {this.state.showResultsModal ?
-                                                    <DBRacesStageAddResultsModal
-                                                        show={this.state.showResultsModal}
-                                                        stage={stage}
-                                                        filter={this.props.filter}
-                                                        mainHeader={"Adding results"}
-                                                        onHide={() => {
-                                                            this.setState({
-                                                                showResultsModal: false
-                                                            },() => this.props.filter())
-                                                        }}
-                                                        /> : null}
                                                     <TableButton id={stage.id} name={stage.id} size="sm"
                                                                  variant={"danger"}
                                                                  onClick={() => {

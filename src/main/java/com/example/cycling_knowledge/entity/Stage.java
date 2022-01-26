@@ -24,7 +24,7 @@ public class Stage {
     private LocalDate date;
 
     @ManyToOne(cascade = {CascadeType.DETACH,  CascadeType.REFRESH})
-    @JsonIgnoreProperties(value = "stageList", allowSetters = true)
+    @JsonIgnoreProperties(value = "stages", allowSetters = true)
     @JoinColumn(name = "race_idrace")
     private Race race;
 
@@ -132,6 +132,8 @@ public class Stage {
         this.results = results;
     }
 
+
+
     @Override
     public String toString() {
         return "Stage{" +
@@ -140,9 +142,10 @@ public class Stage {
                 ", date=" + date +
                 ", race=" + race +
                 ", season=" + season +
-                ", stageCity='" + startCity + '\'' +
+                ", startCity='" + startCity + '\'' +
                 ", finishCity='" + finishCity + '\'' +
                 ", distance=" + distance +
+                ", results=" + results +
                 '}';
     }
 }
