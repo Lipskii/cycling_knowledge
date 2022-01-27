@@ -49,7 +49,7 @@ const CyclistsTable = (props) => {
                         {props.cyclists.map(cyclist => {
                             if (((activePage - 1) * numOfCyclists <= props.cyclists.indexOf(cyclist)) && (props.cyclists.indexOf(cyclist) < activePage * numOfCyclists)) {
                                 return (
-                                    // <LinkContainer to={'/skiJumper/' + cyclist.id} style={{cursor: "pointer"}}>
+                                    <LinkContainer to={'/cyclist/' + cyclist.id} style={{cursor: "pointer"}}>
                                         <tr key={cyclist.id} id={cyclist.id}>
                                             <td width={"10px"}><img
                                                 alt={cyclist.person.country.code}
@@ -74,7 +74,7 @@ const CyclistsTable = (props) => {
 
                                             </td>
                                         </tr>
-                                    // </LinkContainer>
+                                     </LinkContainer>
                                 )
                             }
                         })}

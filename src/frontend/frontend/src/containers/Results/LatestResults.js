@@ -8,19 +8,19 @@ const LatestResults = (props) => {
             <div style={{
                 marginTop: '20px',
                 borderRadius: "10px",
-                //paddingLeft: "10px",
+                paddingLeft: "10px",
             }}>
-                <h6 style={{marginBottom: "10px"}}>Latest results</h6>
-                {props.results.slice(0, 6).map(result => (
-                        <div key={result.id + "_lr"} style={{marginBottom: "20px", height: "20%"}}>
-                            <Card>
-                                <Card.Header>{result.seriesMajor.name} ({result.date1})</Card.Header>
-                                <Card.Subtitle className="mb-2 text-muted" style={{marginTop: "5px", marginLeft: "10px"}}><img
-                                    alt={result.hillVersion.hill.venue.city.region.country.code}
-                                    src={'./flags/' + result.hillVersion.hill.venue.city.region.country.code + '.png'}
-                                    style={{height: "15px", marginRight: "5px"}}/>
-                                    {result.hillVersion.hill.venue.city.name} (HS: {result.hillVersion.hillSize} m)
-                                </Card.Subtitle>
+                 {/*<h6 style={{marginBottom: "10px"}}>Latest results</h6>*/}
+                 {/*{props.results.slice(0, 6).map(result => (*/}
+                 {/*       <div key={result.id + "_lr"} style={{marginBottom: "20px", height: "20%"}}>*/}
+                 {/*           <Card>*/}
+                 {/*               <Card.Header>{result.seriesMajor.name} ({result.date1})</Card.Header>*/}
+                 {/*               <Card.Subtitle className="mb-2 text-muted" style={{marginTop: "5px", marginLeft: "10px"}}><img*/}
+                 {/*                   alt={result.hillVersion.hill.venue.city.region.country.code}*/}
+                 {/*                   src={'./flags/' + result.hillVersion.hill.venue.city.region.country.code + '.png'}*/}
+                 {/*                   style={{height: "15px", marginRight: "5px"}}/>*/}
+                 {/*                   {result.hillVersion.hill.venue.city.name} (HS: {result.hillVersion.hillSize} m)*/}
+                 {/*               </Card.Subtitle>*/}
                             {/*<Media style={{marginLeft: "5px", marginTop: "10px"}}>*/}
                             {/*    <img*/}
                             {/*        width={64}*/}
@@ -54,11 +54,11 @@ const LatestResults = (props) => {
                             {/*            </ul>*/}
                             {/*    </Media.Body>*/}
                             {/*</Media>*/}
-                            </Card>
-                        </div>
-                    )
-                )
-                }
+                {/*            </Card>*/}
+                {/*        </div>*/}
+                {/*    )*/}
+                {/*)*/}
+                {/*}*/}
             </div>
     )
 }

@@ -1,7 +1,7 @@
 import Loader from "react-loader-spinner";
 import {Accordion, Col, Container, Row} from "react-bootstrap";
 import {Component} from "react";
-import SearchResults from "./SearchResults";
+import SearchRace from "./SearchRace";
 import LatestResults from "./LatestResults";
 
 
@@ -27,13 +27,7 @@ class Results extends Component {
             <div style={{marginLeft: "30px", paddingBottom: "10px"}}>
                 {!this.state.pageLoading ? <Container fluid>
                     <Row>
-                        <SearchResults/>
-                        <Col sm={4}>
-                            <Accordion defaultActiveKey="0">
-                                {/*<UpcomingCompetitions competitions={this.state.upcomingCompetitions} eventKey={"0"}/>*/}
-                            </Accordion>
-                            <LatestResults results={this.state.results}/>
-                        </Col>
+                        <SearchRace/>
                     </Row>
                 </Container> : <Loader
                     type="ThreeDots"

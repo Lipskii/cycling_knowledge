@@ -33,11 +33,13 @@ public class StageController {
     public List<Stage> get(
             @And({
                     @Spec(path = "id", params = "id", spec = Equal.class),
-                    @Spec(path = "name", params = "name", spec = Equal.class),
-                    @Spec(path = "category.id", params = "categoryId", spec = Equal.class),
-                    @Spec(path = "country.id", params = "countryId", spec = Equal.class),
+                    @Spec(path = "number", params = "number", spec = Equal.class),
+                    @Spec(path = "race.category.id", params = "categoryId", spec = Equal.class),
+                    @Spec(path = "race.country.id", params = "countryId", spec = Equal.class),
+                    @Spec(path = "race.id", params="raceId", spec=Equal.class),
+                    @Spec(path = "season.id", params="seasonId", spec=Equal.class),
             }) Specification<Stage> spec) {
-        return stageService.get(spec, Sort.by("name"));
+        return stageService.get(spec, Sort.by("number"));
     }
 
     @PostMapping("")

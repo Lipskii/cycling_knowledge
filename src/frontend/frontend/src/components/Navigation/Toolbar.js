@@ -23,7 +23,7 @@ class Toolbar extends Component {
 
 
     render() {
-        return(
+        return (
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top">
                 <LinkContainer to="/">
                     <Navbar.Brand href="/">Cycling KNL</Navbar.Brand>
@@ -32,37 +32,34 @@ class Toolbar extends Component {
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
                         <LinkContainer to="/results">
-                             <Nav.Link>Results</Nav.Link>
+                            <Nav.Link>Results</Nav.Link>
                         </LinkContainer>
                         <LinkContainer to="/cyclists">
                             <Nav.Link>Cyclists</Nav.Link>
                         </LinkContainer>
-                        <Nav.Link>Races</Nav.Link>
-                        <NavDropdown title="Teams" id="collasible-nav-dropdown">
-                            <NavDropdown.Item>World Tour Teams</NavDropdown.Item>
-                            <NavDropdown.Item>Pro Teams</NavDropdown.Item>
-                            <NavDropdown.Item>Continental Teams</NavDropdown.Item>
-                        </NavDropdown>
+                        {/*<LinkContainer to="/cyclistss">*/}
+                        {/*    <Nav.link>Teams</Nav.link>*/}
+                        {/*</LinkContainer>*/}
                     </Nav>
                     <Nav>
                         {this.state.showModeratorBoard ?
-                        <NavDropdown id="collasible-nav-dropdown_two" title="DB Tools">
-                            <LinkContainer to="/DBCyclists">
-                                 <NavDropdown.Item>Cyclists</NavDropdown.Item>
-                            </LinkContainer>
-                            <LinkContainer to="/DBRaces">
-                              <NavDropdown.Item>Races</NavDropdown.Item>
-                            </LinkContainer>
-                            <LinkContainer to="/DBTeams">
-                                <NavDropdown.Item>Teams</NavDropdown.Item>
-                            </LinkContainer>
-                            <LinkContainer to='/'>
-                                <NavDropdown.Item onClick={() => {
-                                    AuthService.logout()
-                                    window.location.reload();
-                                }}>Logout</NavDropdown.Item>
-                            </LinkContainer>
-                        </NavDropdown> : null}
+                            <NavDropdown id="collasible-nav-dropdown_two" title="DB Tools">
+                                <LinkContainer to="/DBCyclists">
+                                    <NavDropdown.Item>Cyclists</NavDropdown.Item>
+                                </LinkContainer>
+                                <LinkContainer to="/DBRaces">
+                                    <NavDropdown.Item>Races</NavDropdown.Item>
+                                </LinkContainer>
+                                <LinkContainer to="/DBTeams">
+                                    <NavDropdown.Item>Teams</NavDropdown.Item>
+                                </LinkContainer>
+                                <LinkContainer to='/'>
+                                    <NavDropdown.Item onClick={() => {
+                                        AuthService.logout()
+                                        window.location.reload();
+                                    }}>Logout</NavDropdown.Item>
+                                </LinkContainer>
+                            </NavDropdown> : null}
                     </Nav>
                     <Nav className="mr-1">
                         <Nav.Link>About</Nav.Link>

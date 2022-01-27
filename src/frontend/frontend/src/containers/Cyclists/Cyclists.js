@@ -1,6 +1,6 @@
 import {Component} from "react";
 import {Accordion, Col, Container, Row} from "react-bootstrap";
-import SearchResults from "../Results/SearchResults";
+import SearchRace from "../Results/SearchRace";
 import LatestResults from "../Results/LatestResults";
 import Loader from "react-loader-spinner";
 import SearchCyclists from "./SearchCyclists";
