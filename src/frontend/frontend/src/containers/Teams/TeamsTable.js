@@ -1,16 +1,27 @@
-import {Pagination, Table} from "react-bootstrap";
 import React, {useState} from "react";
-import fisLogo from "../../assets/fis_logo.png";
 import Loader from "react-loader-spinner";
+import {Table} from "react-bootstrap";
 import {LinkContainer} from "react-router-bootstrap";
 
-const RacesTable = (props) => {
+const TeamsTable = (props) => {
     const [activePage, setActivePage] = useState(1);
 
+    const renderSwitch = (param) => {
+        switch(parseInt(param)){
+            case 1:
+                return "World Tour";
+            case 2:
+                return "Pro Team";
+            case 3:
+                return "Continental Team";
+            default:
+                return "";
+        }
+    }
 
     return (
         <div style={{marginTop: "20px", width: "100%"}}>
-            {props.racesLoading ?
+            {props.teamsLoading ?
                 <Loader
                     type="ThreeDots"
                     color="#00BFFF"
@@ -22,24 +33,24 @@ const RacesTable = (props) => {
                     <h6>Found Races</h6>
                     <Table borderless hover striped size={"sm"}>
                         <tbody>
-                        {props.races.map(race => {
-                                return (
-                                    <LinkContainer to={'/race/' + race.id} style={{cursor: "pointer"}}>
-                                    <tr key={race.id} id={race.id}>
+                        {props.teams.map(team => {
+                            return (
+                                <LinkContainer to={'/team/' + team.id} style={{cursor: "pointer"}}>
+                                    <tr key={team.id} id={team.id}>
                                         <td><img
-                                            alt={race.country.code}
-                                            src={'./flags/' + race.country.code + '.png'}
+                                            alt={team.country.code}
+                                            src={'./flags/' + team.country.code + '.png'}
                                             style={{
                                                 height: "15px",
                                                 marginRight: "5px"
                                             }}/>
                                         </td>
-                                        <td>{race.category.name}</td>
-                                        <td>{race.name}</td>
+                                        <td><b>{team.name}</b></td>
+                                        <td>{renderSwitch(team.division)}</td>
 
                                     </tr>
-                                    </LinkContainer>
-                                 )
+                                 </LinkContainer>
+                            )
                         })}
                         </tbody>
                     </Table>
@@ -51,5 +62,4 @@ const RacesTable = (props) => {
     )
 }
 
-export default RacesTable
-
+export default TeamsTable

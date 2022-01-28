@@ -2,6 +2,7 @@ package com.example.cycling_knowledge.controller;
 
 import com.example.cycling_knowledge.entity.Country;
 import com.example.cycling_knowledge.entity.Team;
+import com.example.cycling_knowledge.entity.TeamCyclistSeason;
 import com.example.cycling_knowledge.service.CountryService;
 import com.example.cycling_knowledge.service.TeamService;
 import net.kaczmarzyk.spring.data.jpa.domain.Equal;
@@ -41,6 +42,18 @@ public class TeamController {
                     @Spec(path = "country.id", params = "countryId", spec = Equal.class),
             }) Specification<Team> spec) {
         return teamService.get(spec, Sort.by("name"));
+    }
+
+    @GetMapping(value = "/teamCyclistSeason", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public List<TeamCyclistSeason> getTeamCyclistSeason(
+            @And({
+                    @Spec(path = "id", params = "id", spec = Equal.class),
+                    @Spec(path = "cyclist.id", params = "cyclistId", spec = Equal.class),
+                    @Spec(path = "team.id", params = "teamId", spec = Equal.class),
+                    @Spec(path = "season.id", params = "seasonId", spec = Equal.class)
+            }) Specification<TeamCyclistSeason> spec) {
+        return teamService.getTeamCyclistSeason(spec, Sort.by("cyclist.person.lastName"));
     }
 
     @PostMapping("")

@@ -3,7 +3,9 @@ package com.example.cycling_knowledge.service;
 import com.example.cycling_knowledge.entity.Country;
 import com.example.cycling_knowledge.entity.Gender;
 import com.example.cycling_knowledge.entity.Team;
+import com.example.cycling_knowledge.entity.TeamCyclistSeason;
 import com.example.cycling_knowledge.repository.GenderRepository;
+import com.example.cycling_knowledge.repository.TeamCyclistSeasonRepository;
 import com.example.cycling_knowledge.repository.TeamRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -18,10 +20,12 @@ import java.util.Optional;
 public class TeamService implements ServiceInterface {
 
     private final TeamRepository teamRepository;
+    private final TeamCyclistSeasonRepository teamCyclistSeasonRepository;
 
     @Autowired
-    public TeamService(TeamRepository teamRepository) {
+    public TeamService(TeamRepository teamRepository, TeamCyclistSeasonRepository teamCyclistSeasonRepository) {
         this.teamRepository = teamRepository;
+        this.teamCyclistSeasonRepository = teamCyclistSeasonRepository;
     }
 
     @Override
@@ -31,6 +35,10 @@ public class TeamService implements ServiceInterface {
 
     public List<Team> get(Specification<Team> spec, Sort sort){
         return teamRepository.findAll(spec,sort);
+    }
+
+    public List<TeamCyclistSeason> getTeamCyclistSeason(Specification<TeamCyclistSeason> spec, Sort sort){
+        return teamCyclistSeasonRepository.findAll(spec,sort);
     }
 
     @Override

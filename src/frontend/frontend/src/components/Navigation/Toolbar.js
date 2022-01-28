@@ -37,6 +37,9 @@ class Toolbar extends Component {
                         <LinkContainer to="/cyclists">
                             <Nav.Link>Cyclists</Nav.Link>
                         </LinkContainer>
+                        <LinkContainer to="/teams">
+                        <Nav.Link>Teams</Nav.Link>
+                        </LinkContainer>
                         {/*<LinkContainer to="/cyclistss">*/}
                         {/*    <Nav.link>Teams</Nav.link>*/}
                         {/*</LinkContainer>*/}

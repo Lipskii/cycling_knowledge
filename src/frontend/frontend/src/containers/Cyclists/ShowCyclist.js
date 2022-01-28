@@ -147,7 +147,11 @@ class ShowCyclist extends Component {
                                             {this.state.cyclist.teamCyclistSeasons.map(team => {
                                                 return(
                                                     <ul>
+                                                        <a
+                                                            href={'/team/' + team.id}
+                                                            style={{color: "black"}}>
                                                         {team.season.season}: {team.team.name}
+                                                    </a>
                                                     </ul>
                                                 )
                                             })}

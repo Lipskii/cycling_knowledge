@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "team")
@@ -28,6 +29,10 @@ public class Team {
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "country_idcountry")
     private Country country;
+
+    @JsonIgnoreProperties(value = "team", allowSetters = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "team") //, cascade = {CascadeType.PERSIST,CascadeType.REMOVE}
+    private List<TeamCyclistSeason> teamCyclistSeasons;
 
     public Team() {
     }
@@ -77,6 +82,14 @@ public class Team {
 
     public void setDivision(int division) {
         this.division = division;
+    }
+
+    public List<TeamCyclistSeason> getTeamCyclistSeasons() {
+        return teamCyclistSeasons;
+    }
+
+    public void setTeamCyclistSeasons(List<TeamCyclistSeason> teamCyclistSeasons) {
+        this.teamCyclistSeasons = teamCyclistSeasons;
     }
 
     @Override

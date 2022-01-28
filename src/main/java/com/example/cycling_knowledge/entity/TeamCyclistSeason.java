@@ -1,5 +1,7 @@
 package com.example.cycling_knowledge.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -15,6 +17,7 @@ public class TeamCyclistSeason {
     @JoinColumn(name = "cyclist_idcyclist")
     private Cyclist cyclist;
 
+    @JsonIgnoreProperties("teamCyclistSeasons")
     @ManyToOne(cascade = { CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "team_idteam")
     private Team team;
@@ -58,6 +61,10 @@ public class TeamCyclistSeason {
 
     public void setSeason(Season season) {
         this.season = season;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     @Override

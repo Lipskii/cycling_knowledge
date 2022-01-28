@@ -14,6 +14,8 @@ import AuthService from "./services/auth.service";
 import DBRacesMain from "./containers/DB/Races/DBRacesMain";
 import ShowCyclist from "./containers/Cyclists/ShowCyclist";
 import ShowRace from "./containers/Results/ShowRace";
+import Teams from "./containers/Teams/Teams";
+import ShowTeam from "./containers/Teams/ShowTeam";
 
 
 class App extends Component {
@@ -57,6 +59,8 @@ class App extends Component {
                 <Route path="/race/:race" component={ShowRace}/>
                 <Route path="/cyclists" component={Cyclists}/>
                 <Route path="/cyclist/:cyclist" component={ShowCyclist}/>
+                <Route path="/teams" component={Teams}/>
+                <Route path="/team/:team" component={ShowTeam}/>
                 <Route path="/" component={Results}/>
                 <Route component={NotFound}/>
             </Switch>
@@ -69,6 +73,8 @@ class App extends Component {
                 <Route path="/cyclists" component={Cyclists}/>
                 <Route path="/race/:race" component={ShowRace}/>
                 <Route path="/cyclist/:cyclist" component={ShowCyclist}/>
+                <Route path="/teams" component={Teams}/>
+                <Route path="/team/:team" component={ShowTeam}/>
                 <Route path="/" component={Results}/>
                 <Route component={NotFound}/>
             </Switch>

@@ -155,7 +155,7 @@ class DBRacesStageAddResultsModal extends Component {
 
                                 <FormikTextInputForm
                                     name="time"
-                                    label="Time*:"
+                                    label="Time (s)*:"
                                 />
 
 
